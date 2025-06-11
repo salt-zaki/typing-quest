@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>GameTitle</title>
+  <link rel="stylesheet" href="css/gameTitle.css">
+  <link rel="stylesheet" href="css/gameSet.css">
+</head>
+<body>
+  <h1>タイピングクエストⅦ</h1>
+  
+  名前を入力してください
+  <form id="startForm" action="GameStart.html" method="POST">
+    <input type="text" name="userName" />
+    <button type="submit">決定</button>
+  </form>
+  <br>
+
+  <p id="nameMsg" style="display: none;">名前が入力されていません</p><br>
+
+  <a href="GameTitle.html">戻る</a>
+  <script src="js/Bean.js"></script>
+  <script src="js/GameSet.js"></script>
+</body>
+</html>

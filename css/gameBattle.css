@@ -1,0 +1,291 @@
+html, body {
+  height: 100%;  /* htmlとbodyを画面全体に合わせる */
+  margin: 0;     /* マージンをゼロにして余白を排除 */
+  padding: 0;    /* パディングをゼロにして余白を排除 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body {
+  background-color: #111;
+  font-family: sans-serif;
+  text-align: center;
+}
+.container {
+  width: 90%;    /* 画面の幅の90% */
+  height: 90%;   /* 画面の高さの90% */
+  background-color: #f0f0f0; /* 背景色 */
+  border: 1px solid #ccc;  /* ボーダー（任意） */
+}
+.battle-screen {
+  width: 1000px;
+  height: auto;
+  margin: 0 auto;
+  padding: 20px;
+  flex-direction: column;
+}
+
+#translation, #message, .hp-status{
+	color: #fff;
+}
+
+/* 画面共通設定 */
+/* 画像設定 */
+.enemyImg, .playerImg {
+  width: 180px;
+  height: 180px;
+  transition: all 0.1s ease-in-out;
+}
+
+/* 敵画像とHPバーの距離 */
+.enemyImg{
+	margin-left:50px;
+}
+
+/* プレイヤー画像とHPバーの距離 */
+.playerImg {
+	margin-right:50px;
+}
+
+/* HPと画像配置 */
+.enemyArea, .playerArea{
+	width: 800px;
+	display: flex;                /* フレックスボックスを使って横並びに */
+	justify-content: center;      /* 横方向のセンタリング */
+}
+
+.hp-status {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ラベルとバーの間隔 */
+}
+
+/* Enemy画面 */
+.enemyArea {
+	display: flex;                /* フレックスボックスを使って横並びに */
+	align-items: flex-start;          /* 縦方向の上側で揃える */
+	position: absolute;             /* 絶対位置指定 */
+	top: 15%;             /* 画面の上から20%の位置に配置 */
+	right: 10%;                       /* 画面右端に配置 */
+}
+
+.enemyStatus {
+  display: flex;
+  flex-direction: column;
+  text-align: left; /* 画像の上に合わせる */
+  gap: 0px;
+}
+
+#EnemyName,#PlayerName {
+  color: white;
+  margin: 0 auto 0 0;
+}
+
+/* Player画面 */
+.playerArea{
+	display: flex;                /* フレックスボックスを使って横並びに */
+	align-items: flex-end;          /* 縦方向の下側で揃える */
+	position: absolute;             /* 絶対位置指定 */
+	bottom: 15%;             /* 画面の上から20%の位置に配置 */
+	left: 10%;                       /* 画面右端に配置 */
+}
+
+.playerStatus {
+  display: flex;
+  flex-direction: column;
+  text-align: left; /* 画像の下に合わせる */
+  gap: 0px;             /* 間隔調整 */
+}
+
+
+
+
+/* ここ */
+
+
+p {
+	width: 400px;
+}
+
+.typing-area {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.question-list {
+  display: inline-block;       /* コンテンツ幅だけにする */
+  margin: 0 auto;              /* 親のtext-alignの影響がない場合用 */
+  text-align: center;
+}
+
+#translation, #text {
+  color: white;
+  margin: 0px auto;
+  width: 100%; 
+  max-width: 800px;
+}
+
+#translation {
+	font-size:25px;
+}
+
+#text {
+	font-size:40px;
+	letter-spacing: -4px; /* 文字同士を近づける（マイナスで狭く） */
+}
+
+#message {
+	font-size:20px;
+	width: 100%;
+	text-align: center;
+	margin: 0 auto 20px auto;
+}
+
+/* 入力欄 */
+#wordInput {
+	font-size: 24px;       
+	margin-top: 20px;
+	padding: 12px 16px;    
+	width: 440px;          
+	height: 50px;          
+	border-radius: 8px;    
+	border: 2px solid #ccc; /
+}
+
+/* ボタンを非表示にする */
+.typing-area button {
+  display: none; 
+}
+
+/* タイマーゲージ外枠 */
+.timer-bar-container {
+  width: 200px;
+  height: 20px;
+  background-color: #444;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  margin: 10px auto 30px auto;
+  overflow: hidden;
+}
+
+/* ゲージ本体（初期は緑） */
+#timer-bar {
+  height: 100%;
+  width: 100%;
+  background-color: rgb(255, 255, 128); /* 緑 */
+}
+
+/* HPゲージのスタイル */
+#enemyHPBar {
+  width: 300px;
+  height: 20px;
+  background-color: #444;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+#playerHPBar {
+  width: 300px;
+  height: 20px;
+  background-color: #444;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+#pHPBar, #eHPBar {
+  width: 100%; /* ゲージの初期値 */
+  height: 100%;
+  background-color: #4caf50; /* 初期状態は緑 */
+  border-radius: 10px;
+  transition: width 0.5s;  /* 幅の変更をスムーズにする */
+}
+
+.hp-status {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ラベルとバーの間隔 */
+}
+
+/* 点滅アニメーション */
+@keyframes flash {
+  0%   { opacity: 1; }
+  25%  { opacity: 0; }
+  50%  { opacity: 1; }
+  75%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.hit {
+	animation: flash 0.4s ease-in-out 4; /* ← 3回繰り返す */
+}
+
+/* .popup */
+.hidden {
+	display: none !important;
+}
+
+.popup {
+  position: fixed; /* 固定位置 */
+  top: 50%; /* 画面の中央に配置 */
+  left: 50%; /* 画面の中央に配置 */
+  transform: translate(-50%, -50%); /* 完全に中央に配置 */
+  width: 400px; /* 幅 */
+  height: 200px; /* 高さ */
+  background-color: black; /* 背景色 */
+  border: 4px solid white; /* 枠線 */
+  display: flex;
+  align-items: center; /* 中央揃え */
+  justify-content: center; /* 中央揃え */
+  z-index: 9999; /* 他の要素より前面に */
+}
+
+.popup-content {
+  width: 440px;
+  height: 240px;
+  background-color: black;             /* 黒背景 */
+  border: 5px solid white;             /* 太い白い枠線 */
+  border-radius: 10px;
+  text-align: center;
+  color: white;                        /* 文字色：白 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.popup-message1-large {
+	font-size: 40px;
+	margin:0 auto;
+	font-weight: bold;    
+}
+
+.popup-message1-small {
+	font-size: 24px;
+	margin:0 auto;  
+}
+
+#popup-message2 {
+	margin-bottom: 40px;
+}
+
+/* .popupボタン */
+#endButton {
+  background-color: #1a1a1a; /* 黒に近いグレー */
+  color: white;
+  border: 2px solid white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+#endButton:hover {
+  background-color: white;
+  color: black;
+  transform: scale(1.05); /* 少し拡大 */
+}

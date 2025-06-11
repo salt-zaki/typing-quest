@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>GameTitle</title>
+  <link rel="stylesheet" href="css/gameTitle.css">
+</head>
+<body>
+  <h1>タイピングクエストⅦ</h1>
+  <p id="typingText"></p>
+
+  <script src="js/common.js"></script>
+  <script>
+    // 表示メッセージ
+    const message = "勇者 " + getName() + "<br>この先に魔王が待ち構えています。<br>魔王を倒し、この世界に平和を!!!";
+    sessionStorage.setItem("status", "start");
+    // 読み込み時に起動
+    window.addEventListener("DOMContentLoaded", () => {
+      const MsgId = document.getElementById("typingText");
+      typeNextChar(message,MsgId); // 画面読み込み時に起動
+      NextPage('GameBattle.html', 10); // 画面遷移の処理
+    });
+  </script>
+</body>
+</html>
