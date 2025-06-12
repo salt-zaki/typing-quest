@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <title>TypingQuest</title>
   <link rel="stylesheet" href="css/gameBattle.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics-compat.js"></script>
+
+  <!-- あなたの初期化ファイル -->
+  <script src="js/firebase-init.js"></script>
 </head>
 <body>
   <div class="battle-screen">
@@ -72,6 +79,7 @@
 	</div>
 
   <!-- script処理 -->
+  <script src="js/firebase-methods.js"></script>
   <script src="js/Bean.js"></script>
   <script src="js/common.js"></script>
   <script src="js/GMBattle.js"></script>

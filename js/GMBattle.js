@@ -1,3 +1,6 @@
+let db;
+
+
 // メッセージ表示（タイピング風）
 const KillMsg = "りゅうおうは力をためている。<br>りゅうおうのまわりに邪悪なオーラが集まっている!!<br>「…これで終わりだ!!」<br>りゅうおうは『終焉の業火』をはなった！";
 const nextMsg = "さすがだな。伝説の勇者とその一族たちよ。<br>しかし不幸なことだ...<br>なまじ強いばかりに私の本当のすがたを<br>見ることになるとは...!!";
@@ -40,7 +43,7 @@ function startTimerBar() {
 			input.disabled = true; // 要素削除：input無効
 
 			message.textContent = "魔王から攻撃を受けた";
-	  	PlayerDamage(); // プレイヤーがダメージを受けた場合に点滅
+	  		PlayerDamage(); // プレイヤーがダメージを受けた場合に点滅
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
@@ -61,11 +64,12 @@ function startTimerBar() {
 // status判定
 function statusCheck(gameStatus){
 	if (gameStatus === "play"){
-		findQuestions(sessionStorage.getItem("StageLevel")).then(result => { // levelの問題を取得
+		let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
+		findQuestions(level).then(result => { 
 			questionList = result;
 			let max = questionList.length;
 			randomIndex = Math.floor(Math.random() * max);
-			updateQuestions(questionList[randomIndex].textNo,1); // false更新。textNoとlevelを引数に渡す
+			updateQuestions(questionList[randomIndex].No,level); // false更新。noとlevelを引数に渡す
 			showQuestion(); // 問題表示
 			startTimerBar(); // タイマー開始
 		},5000);
@@ -207,6 +211,75 @@ function damageJudge(level, damage) {
 let questionList = []; // 問題リスト格納先
 let randomIndex; // index
 
+
+
+// 全データの showText を true に更新
+async function updateAllQuestions() {
+  db = window.db;
+  try {
+    const querySnapshot = await db.collection("typing_questions").get();
+    const updatePromises = [];
+
+    querySnapshot.forEach((docSnap) => {
+      const docRef = db.collection("typing_questions").doc(docSnap.id);
+      updatePromises.push(docRef.update({ showText: "true" }));
+    });
+
+    await Promise.all(updatePromises);
+    console.log("全データの showText を true に更新しました");
+  } catch (err) {
+    console.error("updateAllQuestions エラー:", err);
+  }
+}
+
+// showText = "true" かつdifficulty一致のデータを取得
+async function findQuestions(level) {
+  db = window.db;
+  try {
+    const querySnapshot = await db
+      .collection("typing_questions")
+      .where("difficulty", "==", level)
+      .where("showText", "==", "true")
+      .get();
+
+    const results = [];
+    querySnapshot.forEach((docSnap) => {
+      results.push(docSnap.data());
+    });
+
+    console.log(`${results.length} 件取得（level=${level}, showText=true）`);
+    return results;
+  } catch (err) {
+    console.error("findQuestions エラー:", err);
+    return [];
+  }
+}
+
+// Noとdifficultyの1件をshowText:"false"に更新
+async function updateQuestions(No, level) {
+  db = window.db;
+  try {
+    const querySnapshot = await db
+      .collection("typing_questions")
+      .where("No", "==", No)
+      .where("difficulty", "==", level)
+      .get();
+
+    if (querySnapshot.empty) {
+      console.warn("該当するデータが見つかりませんでした");
+      return;
+    }
+
+    const docRef = querySnapshot.docs[0].ref;
+    await docRef.update({ showText: "false" });
+
+    console.log(`No=${No}, level=${level} のデータを非表示に更新しました`);
+  } catch (err) {
+    console.error("updateQuestions エラー:", err);
+  }
+}
+
+/*
 // updateAllQuestions
 function updateAllQuestions() {
   return fetch(`http://localhost:3000/typingQuestion/updateAll`)
@@ -243,12 +316,13 @@ function updateQuestions(No,level){
 		console.error("updateAllQuestions エラー:", err);
 	});
 }
+*/
 
 //問題の表示
 function showQuestion() {
-  let questionE = questionList[randomIndex].question_en;
-	let questionJ = questionList[randomIndex].question_ja;
-	console.log("問題文：" + questionList[randomIndex].question_en + "/" + questionList[randomIndex].question_ja);
+  let questionE = questionList[randomIndex].text;
+  let questionJ = questionList[randomIndex].translation;
+  console.log("問題文：" + questionList[randomIndex].text + "/" + questionList[randomIndex].translation);
 
   const text = document.getElementById("text"); // タイピング文字
   const translation = document.getElementById("translation"); // 日本語
@@ -268,15 +342,18 @@ function showQuestion() {
     text.appendChild(span);
   }
 
-	text.style.visibility = "visible";
-	translation.style.visibility = "visible";
-	input.disabled = true; // 要素削除：input無効
+  text.style.visibility = "visible";
+  translation.style.visibility = "visible";
+  input.disabled = true; // 要素削除：input無効
   input.focus(); // 要素inputにフォーカスを設定
 }
 
 // メイン //
 // ページ読み込み時に開始
-document.addEventListener("DOMContentLoaded", function () { // HTMLが読み込まれたタイミングで処理を実行
+document.addEventListener("DOMContentLoaded", async function () { // HTMLが読み込まれたタイミングで処理を実行
+	// Firestore のグローバル接続を参照
+	db = window.db; 
+
 	console.log("Window loaded");  // ここでイベントが実行されているかを確認
 	document.getElementById('popup').classList.add('hidden');
 	let input = document.getElementById("wordInput"); // inputを定義
@@ -288,12 +365,14 @@ document.addEventListener("DOMContentLoaded", function () { // HTMLが読み込�
 	sessionStorage.setItem("DamageLevel",0);
 
 	// 初回問題集の取得
-	updateAllQuestions(); // 全問題をtrue
+	await updateAllQuestions(); // 全問題をtrue
 	findQuestions(1).then(result => { // level1の問題を取得
 		questionList = result;
 		let max = questionList.length;
 		randomIndex = Math.floor(Math.random() * max);
-		updateQuestions(questionList[randomIndex].textNo,1); // false更新。textNoとlevelを引数に渡す
+		console.log(questionList);
+		console.log(randomIndex);
+		updateQuestions(questionList[randomIndex].No,1); // false更新。noとlevelを引数に渡す
 		showQuestion(); // 最初の問題表示
 
 		// タイマー開始
