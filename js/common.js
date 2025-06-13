@@ -20,18 +20,37 @@ document.getElementById("PlayerName").textContent = Player.Name;
 document.getElementById("enemyImg").src = "img/" + Enemy.Img;
 document.getElementById("playerImg").src = "img/" + Player.Img;
 
-// POPUP
-function showPopup(msg1,msg2,id1,id2) {
+// POPUP関連 //
+// POPUP設定
+function PopSet(buttonValue){
+	document.getElementById("typingArea").style.visibility = "hidden"; // タイピングエリア非表示
+	document.getElementById("timer-bar-container").style.visibility = "hidden"; // タイマー非表示
+	document.getElementById("message").style.visibility = "hidden";
+	document.getElementById("translation").style.visibility = "hidden";
+	document.getElementById("text").style.visibility = "hidden";
+
+	// POPボタン設定
+	document.getElementById("endButton").textContent = buttonValue;
+}
+
+// POPUP表示
+function showPopup(msg1,msg2) {
 	console.log("showPopup log ");
 	console.log("msg1:", msg1, "msg2:", msg2);
-	document.getElementById('id1').textContent = msg1;
-	document.getElementById('id2').textContent = msg2;
-  	document.getElementById('popup').classList.remove('hidden'); // class="popup hidden"からhiddenを削除する⇒表示させる
+	const gameStatus = sessionStorage.getItem("gameStatus");
+	document.getElementById('popup-message1').textContent = msg1;  
+	const msg2Elem = document.getElementById('popup-message2');
+	if (msg2Elem) {
+	msg2Elem.textContent = msg2 ?? ""; // msg2が未定義なら空文字
+	}
+  	document.getElementById('popup').classList.remove('hidden');
+	document.getElementById('endButton').focus();
 }
 
 function closePopup() {
 	console.log("closePopup log ");
-	ocument.getElementById('popup').classList.add('hidden'); // class="popup "にhiddenを追加する⇒非表示
+	document.getElementById('popup').classList.add('hidden'); // class="popup "にhiddenを追加する⇒非表示
+	const gameStatus = sessionStorage.getItem("gameStatus");
 			
 	// 画面遷移
 	if (gameStatus === "next"){
@@ -55,7 +74,7 @@ function closePopup() {
 	        startTimerBar();
 	    }, 1000); // 3秒後に実行
 	}else if(gameStatus === "end"){
-		NextPage();
+		NextPage('GameTitle.html', 0);
 	}else{
 		//window.location.href = 'gameTitle.html';
 		document.getElementById("stageChange").value = "gameEnd";
@@ -72,7 +91,7 @@ function NextPage(url, seconds) {
 }
 
 // タイピング風メッセージ
-function typeNextChar(message,MsgId) {
+function tyipngMessage(message,MsgId,callback) {
   let index = 0;
   let displayed = "";
 
@@ -84,6 +103,9 @@ function typeNextChar(message,MsgId) {
       MsgId.innerHTML = displayed;
       index++;
       setTimeout(typeChar, 100);
+    }else {
+      // タイピング終了後にコールバックを実行
+      if (callback) callback();
     }
   }
   typeChar(); // 初回起動

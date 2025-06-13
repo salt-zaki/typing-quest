@@ -1,6 +1,5 @@
 let db;
 
-
 // メッセージ表示（タイピング風）
 const KillMsg = "りゅうおうは力をためている。<br>りゅうおうのまわりに邪悪なオーラが集まっている!!<br>「…これで終わりだ!!」<br>りゅうおうは『終焉の業火』をはなった！";
 const nextMsg = "さすがだな。伝説の勇者とその一族たちよ。<br>しかし不幸なことだ...<br>なまじ強いばかりに私の本当のすがたを<br>見ることになるとは...!!";
@@ -17,10 +16,9 @@ this.value = this.value.replace(/[^\x20-\x7E]/g, ''); // 半角英数字と記�
 });
 
 // タイマー
-const totalTime = 7 * 1000; // ミリ秒単位で正確に処理（5秒）
+const totalTime = 100 * 1000; // ミリ秒単位で正確に処理（5秒）
 let startTime;
 let timerRunning = true; // タイマー有効
-
 function startTimerBar() {
 	const bar = document.getElementById("timer-bar");
 	const input = document.getElementById("wordInput");
@@ -61,7 +59,7 @@ function startTimerBar() {
 	requestAnimationFrame(updateBar);
 }
 
-// status判定
+// status判定及び、ゲーム管理
 function statusCheck(gameStatus){
 	if (gameStatus === "play"){
 		let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
@@ -73,20 +71,70 @@ function statusCheck(gameStatus){
 			showQuestion(); // 問題表示
 			startTimerBar(); // タイマー開始
 		},5000);
-	}else if (gameStatus === "next") {
-		showPopup("ステージクリア！", "次のステージへ", "popup-message1", "popup-message2");
-	} else if (gameStatus === "end") {
-		showPopup("ゲーム終了", "魔王に敗れました…", "popup-message1", "popup-message2");
-		// または直接ページ遷移:
-		// window.location.href = "gameEnd.html";
+	}else if (gameStatus === "next"){ 
+		PopSet("すすむ"); // 共通処理
+		let msg1Elem = document.getElementById('popup-message1');
+		msg1Elem.classList.remove('popup-message1-small');
+		msg1Elem.style.color = 'white'; 
+		
+		// popup-message2を削除
+		let msg2Elem = document.getElementById("popup-message2"); // 1. 要素を削除する前に保存
+		let savedElement = msg2Elem;  // 削除前に保存
+		msg2Elem.remove(); // 2. 要素を削除
+		
+		setTimeout(() => {
+			document.getElementById("endButton").style.visibility = "hidden";
+			showPopup(); // 0.5秒後に表示
+			setTimeout(() => { // 3秒後に実行
+				tyipngMessage(nextMsg, msg1Elem, () => {
+					document.getElementById("endButton").style.visibility = "visible";
+					document.body.appendChild(savedElement);  // 要素を復元（再追加）
+				});
+			 }, 500); 
+		}, 1000); 
+	}else if (gameStatus === "KillAttack"){
+		PopSet("たたかう"); // 共通処理
+		let msg1Elem = document.getElementById('popup-message1');
+		msg1Elem.classList.remove('popup-message1-small');
+		msg1Elem.style.color = 'white'; 
+		
+		// popup-message2を削除
+		let msg2Elem = document.getElementById("popup-message2"); // 1. 要素を削除する前に保存
+		let savedElement = msg2Elem;  // 削除前に保存
+		msg2Elem.remove(); // 2. 要素を削除
+
+		setTimeout(() => {
+			document.getElementById("endButton").style.visibility = "hidden";
+			showPopup(); // 0.5秒後に表示
+			setTimeout(() => { // 3秒後に実行
+				tyipngMessage(KillMsg, msg1Elem, () => {
+					document.getElementById("endButton").style.visibility = "visible";
+					document.body.appendChild(savedElement);  // 要素を復元（再追加）
+				});
+			 }, 500); 
+		}, 1000); 
+		document.body.appendChild(savedElement);  // 要素を復元（再追加）
+	}else if (gameStatus === "end"){
+		PopSet("おわり"); // 共通処理
+		let msg1Elem = document.getElementById('popup-message1');
+		msg1Elem.classList.remove('popup-message1-small'); // 旧クラス名を削除
+		msg1Elem.classList.add('popup-message1-large'); // 新しいクラス名を設定
+		const winner = sessionStorage.getItem("winner");
+		if(winner === "enemy"){
+			msg1Elem.style.color = 'red'; 
+			showPopup("GAME OVER","出直してきてください");
+		}else{
+			msg1Elem.style.color = 'rgb(255,255,128)'; 
+			showPopup("CONGRATULATIONS", Player.Name + "の勝利です。");
+		}
 	}
 }
 
 // HPBar更新
-// player
-function updatePlayerHPBar() {
+function updatePlayerHPBar() { // player
 	const pHPBar = document.getElementById("pHPBar");
 	const playerHPBar = document.getElementById("playerHPBar");
+	if (Player.HP <= 0) Player.HP = 0;
 	const playerHPPercentage = Player.HP;
 
 	// HP色変化
@@ -95,19 +143,18 @@ function updatePlayerHPBar() {
 	else if (playerHPPercentage <= Player.MaxHP * 0.6) pHPBar.style.backgroundColor = "orange";
 	pHPBar.style.width = (playerHPPercentage / Player.MaxHP * 100) + "%"; 	// ゲージを更新
 }
-
-// enemy
-function updateEnemyHPBar() {
+function updateEnemyHPBar() { // enemy
 	const eHPBar = document.getElementById("eHPBar");
 	const enemyHPBar = document.getElementById("enemyHPBar");
+	if (Enemy.HP <= 0) Enemy.HP = 0;
 	const enemyHPPercentage = Enemy.HP;
 
 	// HP色変化
 	if (enemyHPPercentage <= 0){
-	  sessionStorage.setItem("status","next");
+	    sessionStorage.setItem("status","next");
 	}else if (enemyHPPercentage <= (0.3 * Enemy.MaxHP)) {
 		sessionStorage.setItem("DamageLevel",4);
-	  eHPBar.style.backgroundColor = "red";
+	    eHPBar.style.backgroundColor = "red";
 	}else if (enemyHPPercentage <= (0.6 * Enemy.MaxHP)) {
 		sessionStorage.setItem("DamageLevel",3);
 		eHPBar.style.backgroundColor = "orange";
@@ -120,6 +167,7 @@ function updateEnemyHPBar() {
 	}
 	eHPBar.style.width = (enemyHPPercentage / Enemy.MaxHP * 100) + "%"; 	// ゲージを更新
 }
+
 // ダメージエフェクト
 function PlayerDamage() { // プレイヤーがダメージを受けた場合
     DamageEffect(document.getElementById("playerImg"));
@@ -139,13 +187,13 @@ function DamageEffect(img) {
     }, 2000); // 2000ms（2秒）後に点滅を停止
 }
 
-// Level別ダメージ判定
-function DamageLevel(level, damage,DummyHP) {
+// Level別ダメージ調節
+function DamageLevel(level, hitDamage,DummyHP) {
 	let ans;
 	let x;
 	switch(level) {
 			case 1:
-				ans = 5;
+				ans = 100;
 				x = 1;
 				break;
 			case 2:
@@ -173,7 +221,7 @@ function DamageLevel(level, damage,DummyHP) {
 				x = 1;
 				break;
 		}
-	if(damage === "player") {
+	if(hitDamage === "player") {
 		DummyHP = DummyHP-ans*x;
 	}else {
 		DummyHP = DummyHP-ans;
@@ -181,40 +229,39 @@ function DamageLevel(level, damage,DummyHP) {
 	return DummyHP;
 }
 
-// レベル別ダメージ判定
-function damageJudge(level, damage) {
+// HPからのstatus管理
+function damageJudge(level, hitDamage) {
 	let DummyHP;
-	if(damage === "player") {
-		DummyHP = Number(DamageLevel(level, damage,Player.HP));
+	if(hitDamage === "player") {
+		DummyHP = Number(DamageLevel(level, hitDamage,Player.HP));
 		if(DummyHP <= 0){
-			sessionStorage.setItem("status", "end");
+			sessionStorage.setItem("gameStatus", "end");
+			sessionStorage.setItem("winner", "enemy");
 		}else{
-			sessionStorage.setItem("status", "play");
+			sessionStorage.setItem("gameStatus", "play");
 		}
 		Player.HP = DummyHP;
 		updatePlayerHPBar();
 	}else {
-		DummyHP = Number(DamageLevel(level, damage,Enemy.HP));
-		if(DummyHP <= 0 && sessionStorage.getItem("StageLevel") === 1){
-			sessionStorage.setItem("status", "end");
-		}else if(DummyHP <= 0 && sessionStorage.getItem("StageLevel") === 0){
-			sessionStorage.setItem("status", "next");
-		}else{
-			sessionStorage.setItem("status", "play");
-		}
+		DummyHP = Number(DamageLevel(level, hitDamage,Enemy.HP));
 		Enemy.HP = DummyHP;
 		updateEnemyHPBar();
+		const StageLevel = Number(sessionStorage.getItem("StageLevel")); // 文字列になるため型変換
+		if(DummyHP <= 0 && StageLevel === 1){
+			sessionStorage.setItem("gameStatus", "end");
+			sessionStorage.setItem("winner", "player");
+		}else if(DummyHP <= 0 &&  StageLevel === 0){
+			sessionStorage.setItem("gameStatus", "next");
+		}else{
+			sessionStorage.setItem("gameStatus", "play");
+		}
 	}
 }
 
 // 問題集取得function
 let questionList = []; // 問題リスト格納先
 let randomIndex; // index
-
-
-
-// 全データの showText を true に更新
-async function updateAllQuestions() {
+async function updateAllQuestions() { // 全データの showText を true に更新
   db = window.db;
   try {
     const querySnapshot = await db.collection("typing_questions").get();
@@ -231,9 +278,7 @@ async function updateAllQuestions() {
     console.error("updateAllQuestions エラー:", err);
   }
 }
-
-// showText = "true" かつdifficulty一致のデータを取得
-async function findQuestions(level) {
+async function findQuestions(level) { // showText = "true" かつdifficulty一致のデータを取得
   db = window.db;
   try {
     const querySnapshot = await db
@@ -254,9 +299,7 @@ async function findQuestions(level) {
     return [];
   }
 }
-
-// Noとdifficultyの1件をshowText:"false"に更新
-async function updateQuestions(No, level) {
+async function updateQuestions(No, level) { // Noとdifficultyの1件をshowText:"false"に更新
   db = window.db;
   try {
     const querySnapshot = await db
@@ -359,10 +402,9 @@ document.addEventListener("DOMContentLoaded", async function () { // HTMLが読�
 	let input = document.getElementById("wordInput"); // inputを定義
 
 	// ゲームステータス管理
-	// 仮
 	sessionStorage.setItem("gameStatus","play");
-	sessionStorage.setItem("StageLevel",1);
-	sessionStorage.setItem("DamageLevel",0);
+	sessionStorage.setItem("StageLevel",0);
+	sessionStorage.setItem("DamageLevel",1);
 
 	// 初回問題集の取得
 	await updateAllQuestions(); // 全問題をtrue
@@ -392,27 +434,27 @@ document.addEventListener("DOMContentLoaded", async function () { // HTMLが読�
 				  
 		if(userInput[userInput.length - 1] === charText){
 			charSpan.style.color = "gray"; // 正しく入力 → 灰色
-    } else {
-      charSpan.style.color = "white"; // 初期状態 or 間違い → 白色
+    	} else {
+      		charSpan.style.color = "white"; // 初期状態 or 間違い → 白色
 			userInput = userInput.slice(0, -1); // 正しくない文字を入力しているので削除する
 
 			// 更新した入力内容を反映
 			input.value = userInput;
 			return;
-    }
+    	}
 		// すべて正しく入力されたら自動送信
-	  if (userInput === correctWord) {
+		if (userInput === correctWord) {
 			timerRunning = false; // タイマー停止
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "enemy"); // レベル・ダメージ判定
 
 			// ダメージエフェクト
 			message.textContent = "勇者の攻撃";
-	  	EnemyDamage(); // プレイヤーがダメージを受けた場合に点滅
+			EnemyDamage(); // プレイヤーがダメージを受けた場合に点滅
 			const gameStatus = sessionStorage.getItem("gameStatus");
 			setTimeout(() => { // status判定
-  			statusCheck(gameStatus);
+				statusCheck(gameStatus);
 			}, 3000);
-	  }
+		}
 	});
 });

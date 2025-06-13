@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>TypingQuest</title>
   <link rel="stylesheet" href="css/gameBattle.css">
+  <link rel="stylesheet" href="css/gamePop.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
@@ -50,7 +51,7 @@
     </div>
 
     <!-- タイマー -->
-    <div class="timer-bar-container">
+    <div class="timer-bar-container" id="timer-bar-container">
       <div id="timer-bar"></div>
     </div>
 
@@ -74,7 +75,7 @@
 	  <div class="popup-content">
 	    <p id="popup-message1"></p>
 	    <p id="popup-message2"></p>
-	    <button id="endButton" onclick="closePopup()" style="visibility: visible";></button>
+	    <button id="endButton" onclick="closePopup()"></button>
 	  </div>
 	</div>
 
