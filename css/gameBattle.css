@@ -118,11 +118,12 @@ p {
   text-align: center;
 }
 
-#translation, #text {
+#translation, #text{
   color: white;
   margin: 0px auto;
   width: 100%; 
   max-width: 800px;
+  min-height: 1.2em; /* 好みに応じて調整 */
 }
 
 #translation {

@@ -20,6 +20,24 @@ document.getElementById("PlayerName").textContent = Player.Name;
 document.getElementById("enemyImg").src = "img/" + Enemy.Img;
 document.getElementById("playerImg").src = "img/" + Player.Img;
 
+
+// ゲームステータス管理
+// ゲーム開始時
+function fastGameStatus() {
+	sessionStorage.setItem("gameStatus","play");
+	sessionStorage.setItem("StageLevel",0);
+	sessionStorage.setItem("DamageLevel",1);
+}
+// nextステージ
+function nextGameStatus() {
+	const Estatus = new Status("しんりゅうおう", 200, 200, "enemyImg1-2.jpg");
+	const Pstatus = new Status(Player.Name, 120, 120, "playerImg1-1.jpg");
+	sessionStorage.setItem("Estatus", JSON.stringify(Estatus));
+	sessionStorage.setItem("Pstatus", JSON.stringify(Pstatus));
+	sessionStorage.setItem("gameStatus","play");
+	sessionStorage.setItem("StageLevel",2);
+}
+
 // POPUP関連 //
 // POPUP設定
 function PopSet(buttonValue){
@@ -54,9 +72,9 @@ function closePopup() {
 			
 	// 画面遷移
 	if (gameStatus === "next"){
-		document.getElementById("stageChange").value = "start2";
-		document.getElementById("damageLevel").value = "2"
-		document.getElementById("typingForm").submit();
+		nextGameStatus();
+		location.reload(); // 画面を再読み込み
+
 	}else if(gameStatus === "KillAttack"){
 		// ゲーム再開
 		setTimeout(() => {

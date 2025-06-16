@@ -113,7 +113,6 @@ function statusCheck(gameStatus){
 				});
 			 }, 500); 
 		}, 1000); 
-		document.body.appendChild(savedElement);  // 要素を復元（再追加）
 	}else if (gameStatus === "end"){
 		PopSet("おわり"); // 共通処理
 		let msg1Elem = document.getElementById('popup-message1');
@@ -131,6 +130,7 @@ function statusCheck(gameStatus){
 }
 
 // HPBar更新
+const unitWidthPerHP = 3; // 1HPあたり3px幅にする
 function updatePlayerHPBar() { // player
 	const pHPBar = document.getElementById("pHPBar");
 	const playerHPBar = document.getElementById("playerHPBar");
@@ -141,7 +141,8 @@ function updatePlayerHPBar() { // player
 	if (playerHPPercentage <= 0)	pHPBar.style.backgroundColor = "#444";
 	else if (playerHPPercentage <= Player.MaxHP * 0.3) pHPBar.style.backgroundColor = "red";
 	else if (playerHPPercentage <= Player.MaxHP * 0.6) pHPBar.style.backgroundColor = "orange";
-	pHPBar.style.width = (playerHPPercentage / Player.MaxHP * 100) + "%"; 	// ゲージを更新
+	playerHPBar.style.width = (Player.MaxHP * unitWidthPerHP) + "px";
+	pHPBar.style.width = (playerHPPercentage / Player.MaxHP * 100) + "%"; 	// ゲージ内の進捗（HP%）
 }
 function updateEnemyHPBar() { // enemy
 	const eHPBar = document.getElementById("eHPBar");
@@ -165,7 +166,8 @@ function updateEnemyHPBar() { // enemy
 		sessionStorage.setItem("DamageLevel",1);
 		eHPBar.style.backgroundColor = "#4caf50";
 	}
-	eHPBar.style.width = (enemyHPPercentage / Enemy.MaxHP * 100) + "%"; 	// ゲージを更新
+	enemyHPBar.style.width = (Enemy.MaxHP * unitWidthPerHP) + "px";  // ゲージ枠の幅
+	eHPBar.style.width = (enemyHPPercentage / Enemy.MaxHP * 100) + "%";  // ゲージ内の進捗（HP%）
 }
 
 // ダメージエフェクト
@@ -273,6 +275,7 @@ async function updateAllQuestions() { // 全データの showText を true に�
     });
 
     await Promise.all(updatePromises);
+	window.fq = false;
     console.log("全データの showText を true に更新しました");
   } catch (err) {
     console.error("updateAllQuestions エラー:", err);
@@ -394,32 +397,26 @@ function showQuestion() {
 // メイン //
 // ページ読み込み時に開始
 document.addEventListener("DOMContentLoaded", async function () { // HTMLが読み込まれたタイミングで処理を実行
-	// Firestore のグローバル接続を参照
-	db = window.db; 
-
+	db = window.db; // Firestore のグローバル接続を参照
 	console.log("Window loaded");  // ここでイベントが実行されているかを確認
 	document.getElementById('popup').classList.add('hidden');
 	let input = document.getElementById("wordInput"); // inputを定義
 
-	// ゲームステータス管理
-	sessionStorage.setItem("gameStatus","play");
-	sessionStorage.setItem("StageLevel",0);
-	sessionStorage.setItem("DamageLevel",1);
-
 	// 初回問題集の取得
-	await updateAllQuestions(); // 全問題をtrue
-	findQuestions(1).then(result => { // level1の問題を取得
+	if(window.fq) await updateAllQuestions(); // 全問題をtrue
+	let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
+	findQuestions(level).then(result => { // level1の問題を取得
 		questionList = result;
 		let max = questionList.length;
 		randomIndex = Math.floor(Math.random() * max);
 		console.log(questionList);
 		console.log(randomIndex);
-		updateQuestions(questionList[randomIndex].No,1); // false更新。noとlevelを引数に渡す
+		updateQuestions(questionList[randomIndex].No,level); // false更新。noとlevelを引数に渡す
 		showQuestion(); // 最初の問題表示
 
 		// タイマー開始
 	  startTimerBar();
-	},2500);
+	},1500);
 
 	// inputはDOMContentLoaded内で定義すればnullにならない
 	// スペルを一文字ごとに確認し色付けする

@@ -24,7 +24,8 @@ document.getElementById("startForm").addEventListener("submit", function (e) {
   // JSON.stringify() で保存されるのはデータだけでクラス情報は削除される）
   sessionStorage.setItem("Estatus", JSON.stringify(Estatus));
   sessionStorage.setItem("Pstatus", JSON.stringify(Pstatus));
-  
+
+  window.fq = true;
   // log
   console.log("画面遷移開始");
 });
