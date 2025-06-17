@@ -25,7 +25,7 @@ document.getElementById("startForm").addEventListener("submit", function (e) {
   sessionStorage.setItem("Estatus", JSON.stringify(Estatus));
   sessionStorage.setItem("Pstatus", JSON.stringify(Pstatus));
 
-  window.fq = true;
+  sessionStorage.setItem("firstUpdate", "true"); // 初回問題取得flag
   // log
   console.log("画面遷移開始");
 });

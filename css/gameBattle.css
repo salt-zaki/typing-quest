@@ -97,12 +97,6 @@ body {
   gap: 0px;             /* 間隔調整 */
 }
 
-
-
-
-/* ここ */
-
-
 p {
 	width: 400px;
 }
@@ -132,7 +126,7 @@ p {
 
 #text {
 	font-size:40px;
-	letter-spacing: -4px; /* 文字同士を近づける（マイナスで狭く） */
+	letter-spacing: 2px; /* 文字同士を近づける（マイナスで狭く） */
 }
 
 #message {
@@ -208,17 +202,3 @@ p {
   align-items: center;
   gap: 10px; /* ラベルとバーの間隔 */
 }
-
-/* 点滅アニメーション */
-@keyframes flash {
-  0%   { opacity: 1; }
-  25%  { opacity: 0; }
-  50%  { opacity: 1; }
-  75%  { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.hit {
-	animation: flash 0.4s ease-in-out 4; /* ← 3回繰り返す */
-}
-

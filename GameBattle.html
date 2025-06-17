@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>TypingQuest</title>
   <link rel="stylesheet" href="css/gameBattle.css">
+  <link rel="stylesheet" href="css/gameEffect.css">
   <link rel="stylesheet" href="css/gamePop.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
@@ -77,6 +78,12 @@
 	    <p id="popup-message2"></p>
 	    <button id="endButton" onclick="closePopup()"></button>
 	  </div>
+	</div>
+
+  <!-- 回復エフェクト -->
+	<div id="heal-effect">
+  		<div class="sparkle"></div>
+  		<div class="heal-text">+15 HP</div>
 	</div>
 
   <!-- script処理 -->

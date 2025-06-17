@@ -1,6 +1,18 @@
 /* .popup */
-.hidden {
+/* .hidden {
 	display: none !important;
+} */
+
+.typing-area.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.typing-area.visible {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .popup {
