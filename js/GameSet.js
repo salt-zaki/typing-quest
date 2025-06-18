@@ -1,36 +1,3 @@
-// 名前登録
-document.getElementById("setNameBtn").addEventListener("click", async function (e) {
-  const userName = document.getElementById("userNameInput").value.trim(); // 空白除去
-  let input = document.getElementById("userNameInput");
-  let btn = document.getElementById("setNameBtn");
-  const nameMsg1 = document.getElementById("nameMsg1"); // 要素取得
-  input.disabled = false;
-  btn.disabled = false;
-
-  if (!userName) {
-    nameMsg1.style.display = "inline"; // 表示する
-    nameMsg1.innerText = "名前が入力されていません";
-    console.log("名前が未入力です");
-    return;
-  }
-
-  const result = await addUserRegister(userName); // 登録
-
-  if (!result){
-    nameMsg1.style.display = "inline"; // 表示する
-    nameMsg1.innerText = userName + "は既に登録されています";
-    console.log("登録済みユーザー名が入力されました");
-    return;
-  }
-
-  const startRegister = document.getElementById("startRegister"); // 要素取得
-  const endRegister = document.getElementById("endRegister"); // 要素取得
-  startRegister.style.display = "none"; // 非表示する
-  endRegister.style.display = "inline"; // 表示する
-  input.disabled = true;
-  btn.disabled = true;
-});
-
 // 名前入力・登録チェック
 document.getElementById("getNameBtn").addEventListener("click", async function (e) {
   const userName = document.getElementById("userNameInput").value.trim(); // 空白除去
