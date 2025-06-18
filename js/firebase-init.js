@@ -1,7 +1,5 @@
 // firebase-init.js
-
 // Firebase SDK を使うには HTML 側で script タグで読み込む（このファイルでは import しない）
-
 // Firebase 設定オブジェクト
 const firebaseConfig = {
   apiKey: "AIzaSyAy9JGNSosbnqqTCHdHeiPGj8qF9oYIAno",
