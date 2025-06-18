@@ -20,8 +20,8 @@ function AbilityAttack(){
 	PopSet("たたかう"); // 共通処理
 	let msg1Elem = document.getElementById('popup-message1');
 	msg1Elem.classList.remove('popup-message1-small');
-	msg1Elem.style.color = 'white'; 
-	
+	msg1Elem.style.color = 'white';
+
 	// popup-message2を削除
 	let msg2Elem = document.getElementById("popup-message2"); // 1. 要素を削除する前に保存
 	let savedElement = msg2Elem;  // 削除前に保存
@@ -35,8 +35,8 @@ function AbilityAttack(){
 				document.getElementById("endButton").style.visibility = "visible";
 				document.body.appendChild(savedElement);  // 要素を復元（再追加）
 			});
-			}, 500); 
-	}, 1000); 
+			}, 500);
+	}, 1000);
 
 	return new Promise((resolve) => {
 		window._popupCallback = () => {
@@ -76,7 +76,7 @@ function startTimerBar() {
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
 			setTimeout(() => { // status判定
-  				statusCheck(gameStatus);
+				statusCheck(gameStatus);
 			}, 3000);
 		}
 		if (timerRunning) {
@@ -102,7 +102,7 @@ async function statusCheck(gameStatus){
 		}else {
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
 		}
-		await findQuestions(level).then(result => { 
+		await findQuestions(level).then(result => {
 			questionList = result;
 			let max = questionList.length;
 			randomIndex = Math.floor(Math.random() * max);
@@ -110,17 +110,17 @@ async function statusCheck(gameStatus){
 			showQuestion(); // 問題表示
 			startTimerBar(); // タイマー開始
 		},3000);
-	}else if (gameStatus === "next"){ 
+	}else if (gameStatus === "next"){
 		PopSet("すすむ"); // 共通処理
 		let msg1Elem = document.getElementById('popup-message1');
 		msg1Elem.classList.remove('popup-message1-small');
-		msg1Elem.style.color = 'white'; 
-		
+		msg1Elem.style.color = 'white';
+
 		// popup-message2を削除
 		let msg2Elem = document.getElementById("popup-message2"); // 1. 要素を削除する前に保存
 		let savedElement = msg2Elem;  // 削除前に保存
 		msg2Elem.remove(); // 2. 要素を削除
-		
+
 		setTimeout(() => {
 			document.getElementById("endButton").style.visibility = "hidden";
 			showPopup(); // 0.5秒後に表示
@@ -129,8 +129,8 @@ async function statusCheck(gameStatus){
 					document.getElementById("endButton").style.visibility = "visible";
 					document.body.appendChild(savedElement);  // 要素を復元（再追加）
 				});
-			 }, 500); 
-		}, 1000); 
+			}, 500);
+		}, 1000);
 	}else if (gameStatus === "end"){
 		PopSet("おわり"); // 共通処理
 		let msg1Elem = document.getElementById('popup-message1');
@@ -138,10 +138,10 @@ async function statusCheck(gameStatus){
 		msg1Elem.classList.add('popup-message1-large'); // 新しいクラス名を設定
 		const winner = sessionStorage.getItem("winner");
 		if(winner === "enemy"){
-			msg1Elem.style.color = 'red'; 
+			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
 		}else{
-			msg1Elem.style.color = 'rgb(255,255,128)'; 
+			msg1Elem.style.color = 'rgb(255,255,128)';
 			showPopup("CONGRATULATIONS", Player.Name + "の勝利です。");
 		}
 	}
@@ -245,8 +245,6 @@ function damageJudge(level, hitDamage) {
 		updatePlayerHPBar();
 	}else {
 		DummyHP = Number(DamageLevel(level, hitDamage,Enemy.HP));
-		Enemy.HP = DummyHP;
-		updateEnemyHPBar();
 		const StageLevel = Number(sessionStorage.getItem("StageLevel")); // 文字列になるため型変換
 		if(DummyHP <= 0 && StageLevel === 1){
 			sessionStorage.setItem("gameStatus", "end");
@@ -256,6 +254,8 @@ function damageJudge(level, hitDamage) {
 		}else{
 			sessionStorage.setItem("gameStatus", "play");
 		}
+		Enemy.HP = DummyHP;
+		updateEnemyHPBar();
 	}
 }
 
@@ -263,103 +263,105 @@ function damageJudge(level, hitDamage) {
 let questionList = []; // 問題リスト格納先
 let randomIndex; // index
 async function updateAllQuestions() { // 全データの showText を true に更新
-  db = window.db;
-  try {
-    const querySnapshot = await db.collection("typing_questions").get();
-    const updatePromises = [];
+	db = window.db;
+	try {
+    	const querySnapshot = await db.collection("typing_questions").get();
+    	const updatePromises = [];
 
-    querySnapshot.forEach((docSnap) => {
-      const docRef = db.collection("typing_questions").doc(docSnap.id);
-      updatePromises.push(docRef.update({ showText: "true" }));
-    });
+    	querySnapshot.forEach((docSnap) => {
+		const docRef = db.collection("typing_questions").doc(docSnap.id);
+		updatePromises.push(docRef.update({ showText: "true" }));
+    	});
 
-    await Promise.all(updatePromises);
-	sessionStorage.setItem("firstUpdate", "false");
-    console.log("全データの showText を true に更新しました");
-  } catch (err) {
-    console.error("updateAllQuestions エラー:", err);
-  }
+    	await Promise.all(updatePromises);
+		sessionStorage.setItem("firstUpdate", "false");
+    	console.log("全データの showText を true に更新しました");
+	} catch (err) {
+    	console.error("updateAllQuestions エラー:", err);
+	}
 }
 async function findQuestions(level) { // showText = "true" かつdifficulty一致のデータを取得
-  db = window.db;
-  try {
-    const querySnapshot = await db
-      .collection("typing_questions")
-      .where("difficulty", "==", level)
-      .where("showText", "==", "true")
-      .get();
+	db = window.db;
+	try {
+    	const querySnapshot = await db
+		.collection("typing_questions")
+		.where("difficulty", "==", level)
+		.where("showText", "==", "true")
+		.get();
 
-    const results = [];
-    querySnapshot.forEach((docSnap) => {
-      results.push(docSnap.data());
-    });
+    	const results = [];
+    	querySnapshot.forEach((docSnap) => {
+		results.push(docSnap.data());
+    	});
 
-    console.log(`${results.length} 件取得（level=${level}, showText=true）`);
-    return results;
-  } catch (err) {
-    console.error("findQuestions エラー:", err);
-    return [];
-  }
+    	console.log(`${results.length} 件取得（level=${level}, showText=true）`);
+    	return results;
+	} catch (err) {
+    	console.error("findQuestions エラー:", err);
+    	return [];
+	}
 }
 async function updateQuestions(No, level) { // Noとdifficultyの1件をshowText:"false"に更新
-  db = window.db;
-  try {
-    const querySnapshot = await db
-      .collection("typing_questions")
-      .where("No", "==", No)
-      .where("difficulty", "==", level)
-      .get();
+	db = window.db;
+	try {
+    	const querySnapshot = await db
+		.collection("typing_questions")
+		.where("No", "==", No)
+		.where("difficulty", "==", level)
+		.get();
 
-    if (querySnapshot.empty) {
-      console.warn("該当するデータが見つかりませんでした");
-      return;
-    }
+    	if (querySnapshot.empty) {
+			console.warn("該当するデータが見つかりませんでした");
+			return;
+		}
 
-    const docRef = querySnapshot.docs[0].ref;
-    await docRef.update({ showText: "false" });
-
-    console.log(`No=${No}, level=${level} のデータを非表示に更新しました`);
-  } catch (err) {
-    console.error("updateQuestions エラー:", err);
-  }
+    	const docRef = querySnapshot.docs[0].ref;
+    	await docRef.update({ showText: "false" });
+		console.log(`No=${No}, level=${level} のデータを非表示に更新しました`);
+	} catch (err) {
+    	console.error("updateQuestions エラー:", err);
+	}
 }
 
 //問題の表示
 function showQuestion() {
-  let questionE = questionList[randomIndex].text;
-  let questionJ = questionList[randomIndex].translation;
-  console.log("問題文：" + questionList[randomIndex].text + "/" + questionList[randomIndex].translation);
+	let questionE = questionList[randomIndex].text;
+	let questionJ = questionList[randomIndex].translation;
+	console.log("問題文：" + questionList[randomIndex].text + "/" + questionList[randomIndex].translation);
 
-  const text = document.getElementById("text"); // タイピング文字
-  const translation = document.getElementById("translation"); // 日本語
-  const input = document.getElementById("wordInput");
+  	const text = document.getElementById("text"); // タイピング文字
+	const translation = document.getElementById("translation"); // 日本語
+	const input = document.getElementById("wordInput");
 
-  // 表示リセット
-  text.innerHTML = ""; //<span>を使用しているため要素ごと削除
-  translation.textContent = questionJ; // 問題文を出力
-  input.value = ""; // 入力欄をクリア
-  message.textContent = "正しく入力してください";
+  	// 表示リセット
+  	text.innerHTML = ""; //<span>を使用しているため要素ごと削除
+  	translation.textContent = questionJ; // 問題文を出力
+  	input.value = ""; // 入力欄をクリア
+	message.textContent = "正しく入力してください";
 
-  // <span> で分解して1文字ずつ表示
-  for (let i = 0; i < questionE.length; i++) {
-    const span = document.createElement("span");
-    span.id = `char${i}`; // spanのidを一文字づつ設定
-    span.textContent = questionE[i];
-    text.appendChild(span);
-  }
+	// <span> で分解して1文字ずつ表示
+	for (let i = 0; i < questionE.length; i++) {
+		const span = document.createElement("span");
+		span.id = `char${i}`; // spanのidを一文字づつ設定
+		span.textContent = questionE[i];
+		text.appendChild(span);
+	}
 
-  text.style.visibility = "visible";
-  translation.style.visibility = "visible";
-  input.disabled = true; // 要素削除：input無効
-  input.focus(); // 要素inputにフォーカスを設定
+	text.style.visibility = "visible";
+	translation.style.visibility = "visible";
+	input.disabled = true; // 要素削除：input無効
+	input.focus(); // 要素inputにフォーカスを設定
 }
 
 let typingCount; // タイピングカウント
 // メイン //
 // ページ読み込み時に開始
 document.addEventListener("DOMContentLoaded", async function () { // HTMLが読み込まれたタイミングで処理を実行
+	// 初期処理
 	console.log("Window loaded");  // ここでイベントが実行されているかを確認
 	document.getElementById('popup').classList.add('hidden');
+	updatePlayerHPBar();
+	updateEnemyHPBar();
 	if(sessionStorage.getItem("firstUpdate") === "true") await updateAllQuestions(); // 全問題をtrue
 	db = window.db; // Firestore のグローバル接続を参照
 	let input = document.getElementById("wordInput"); // inputを定義
@@ -376,8 +378,8 @@ document.addEventListener("DOMContentLoaded", async function () { // HTMLが読�
 		showQuestion(); // 最初の問題表示
 
 		// タイマー開始
-	  startTimerBar();
-	},1500);
+		startTimerBar();
+	},1000);
 
 	// inputはDOMContentLoaded内で定義すればnullにならない
 	// スペルを一文字ごとに確認し色付けする
@@ -385,16 +387,16 @@ document.addEventListener("DOMContentLoaded", async function () { // HTMLが読�
 		let correctWord = document.getElementById("text").textContent; // タイピング文字
 		let userInput = input.value; // 入力するたびに最新値
 		console.log("入力文字：" + userInput); // 入力文字
-		
+
 		const charSpan = document.getElementById(`char${userInput.length - 1}`); // <span>内の要素を取得
 		const charText = document.getElementById(`char${userInput.length - 1}`).innerText; // <span>内のテキストを取得
-		console.log("一致文字：" + charSpan); 
-				  
+		console.log("一致文字：" + charSpan);
+
 		if(userInput[userInput.length - 1] === charText){
 			charSpan.style.color = "gray"; // 正しく入力 → 灰色
 			typingCount++;
 			if(typingCount >= 15){ // 回復処理
-				Player.HP += 15; 
+				Player.HP += 15;
 				if(Player.HP >= Player.MaxHP) Player.HP = Player.MaxHP;
 				updatePlayerHPBar();
 				showHealEffect(); // 回復エフェクト

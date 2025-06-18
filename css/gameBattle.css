@@ -1,28 +1,26 @@
 html, body {
-  height: 100%;  /* htmlとbodyを画面全体に合わせる */
+  width: 100vw;
+  height: 100vh;
   margin: 0;     /* マージンをゼロにして余白を排除 */
   padding: 0;    /* パディングをゼロにして余白を排除 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; /* この要素（親要素）を フレックスコンテナにする。直下の子要素がフレックスアイテムとしてレイアウトされ、中央配置や横並びなどの柔軟なレイアウトが可能になる。 */
+  justify-content: center; /* 水平方向に子要素を中央揃えにする。*/
+  align-items: center; /* 垂直方向に子要素を中央揃えにする。*/
 }
 body {
   background-color: #111;
   font-family: sans-serif;
   text-align: center;
 }
-.container {
-  width: 90%;    /* 画面の幅の90% */
-  height: 90%;   /* 画面の高さの90% */
-  background-color: #f0f0f0; /* 背景色 */
-  border: 1px solid #ccc;  /* ボーダー（任意） */
-}
+
 .battle-screen {
-  width: 1000px;
-  height: auto;
-  margin: 0 auto;
-  padding: 20px;
-  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #translation, #message, .hp-status{
@@ -49,7 +47,7 @@ body {
 
 /* HPと画像配置 */
 .enemyArea, .playerArea{
-	width: 800px;
+	width: 70%;
 	display: flex;                /* フレックスボックスを使って横並びに */
 	justify-content: center;      /* 横方向のセンタリング */
 }
@@ -65,11 +63,12 @@ body {
 	display: flex;                /* フレックスボックスを使って横並びに */
 	align-items: flex-start;          /* 縦方向の上側で揃える */
 	position: absolute;             /* 絶対位置指定 */
-	top: 15%;             /* 画面の上から20%の位置に配置 */
-	right: 10%;                       /* 画面右端に配置 */
+	top: 5vh;             /* 画面の上から20%の位置に配置 */
+	right: 0vw;                       /* 画面右端に配置 */
 }
 
 .enemyStatus {
+  min-width: 340px;
   display: flex;
   flex-direction: column;
   text-align: left; /* 画像の上に合わせる */
@@ -83,11 +82,11 @@ body {
 
 /* Player画面 */
 .playerArea{
-	display: flex;                /* フレックスボックスを使って横並びに */
-	align-items: flex-end;          /* 縦方向の下側で揃える */
-	position: absolute;             /* 絶対位置指定 */
-	bottom: 15%;             /* 画面の上から20%の位置に配置 */
-	left: 10%;                       /* 画面右端に配置 */
+	display: flex; /* フレックスボックスを使って横並びに */
+	align-items: flex-end; /* 縦方向の下側で揃える */
+	position: absolute; /* 絶対位置指定 */
+	bottom: 5vh;
+	left: 0vw; /* 画面右端に配置 */
 }
 
 .playerStatus {
@@ -102,8 +101,16 @@ p {
 }
 
 .typing-area {
-  text-align: center;
-  margin-top: 10px;
+  width: 80%;
+  position: absolute;
+  top: 45vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 非表示にするクラス */
+.hidden {
+  visibility: hidden;
 }
 
 .question-list {
@@ -115,13 +122,12 @@ p {
 #translation, #text{
   color: white;
   margin: 0px auto;
-  width: 100%; 
-  max-width: 800px;
+  width: 100%;
   min-height: 1.2em; /* 好みに応じて調整 */
 }
 
 #translation {
-	font-size:25px;
+	font-size:20px;
 }
 
 #text {
@@ -130,36 +136,40 @@ p {
 }
 
 #message {
-	font-size:20px;
+	font-size:24px;
 	width: 100%;
 	text-align: center;
-	margin: 0 auto 20px auto;
+	margin: 0 auto 10px auto;
 }
 
 /* 入力欄 */
 #wordInput {
-	font-size: 24px;       
-	margin-top: 20px;
-	padding: 12px 16px;    
-	width: 440px;          
-	height: 50px;          
-	border-radius: 8px;    
+	font-size: 24px;
+	margin-top: 10px;
+	padding: 12px 12px;
+	width: 45%;
+	height: 50px;
+	border-radius: 12px;
 	border: 2px solid #ccc; /
 }
 
 /* ボタンを非表示にする */
 .typing-area button {
-  display: none; 
+  display: none;
 }
 
 /* タイマーゲージ外枠 */
 .timer-bar-container {
-  width: 200px;
+  width: 20%;
   height: 20px;
+  position: absolute;
+  top: 68vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: #444;
   border: 2px solid #fff;
   border-radius: 10px;
-  margin: 10px auto 30px auto;
+  margin: 0px auto;
   overflow: hidden;
 }
 

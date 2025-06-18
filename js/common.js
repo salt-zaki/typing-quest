@@ -11,7 +11,7 @@ window.Player = reviveStatus(p);
 
 // JSON → Statusのインスタンスに再構築
 function reviveStatus(obj) {
-  return new Status(obj.Name, Number(obj.HP), Number(obj.MaxHP), obj.Img);
+	return new Status(obj.Name, Number(obj.HP), Number(obj.MaxHP), obj.Img);
 }
 
 // DOMに表示
@@ -55,13 +55,12 @@ function PopSet(buttonValue){
 function showPopup(msg1,msg2) {
 	console.log("showPopup log ");
 	console.log("msg1:", msg1, "msg2:", msg2);
-	const gameStatus = sessionStorage.getItem("gameStatus");
-	document.getElementById('popup-message1').textContent = msg1;  
+	document.getElementById('popup-message1').textContent = msg1;
 	const msg2Elem = document.getElementById('popup-message2');
 	if (msg2Elem) {
-	msg2Elem.textContent = msg2 ?? ""; // msg2が未定義なら空文字
+		msg2Elem.textContent = msg2 ?? ""; // msg2が未定義なら空文字
 	}
-  	document.getElementById('popup').classList.remove('hidden');
+	document.getElementById('popup').classList.remove('hidden');
 	document.getElementById('endButton').focus();
 }
 
@@ -74,22 +73,15 @@ function closePopup() {
 		nextGameStatus();
 		location.reload(); // 画面を再読み込み
 	}else if(gameStatus === "AbilityAttack"){
-		// ✅ resolve() を呼び出すための callback 実行
+		// resolve() を呼び出すための callback 実行
 		if (typeof window._popupCallback === "function") {
-			const typingArea = document.getElementById("typingArea");
-			typingArea.classList.remove("hidden"); // CSSに任せて表示
-			typingArea.classList.add("visible");
-			void typingArea.offsetWidth;
-
-			// document.getElementById("typingArea").style.visibility = "visible"; // タイピングエリア非表示
+			document.getElementById("typingArea").style.visibility = "visible"; // タイピングエリア非表示
 			document.getElementById("timer-bar-container").style.visibility = "visible"; // タイマー非表示
 			document.getElementById("message").style.visibility = "visible";
-			document.getElementById("translation").style.visibility = "visible";
-			document.getElementById("text").style.visibility = "visible";
 			document.getElementById("wordInput").focus();
-
+			void typingArea.offsetWidth;
 			window._popupCallback();
-      		window._popupCallback = null;
+			window._popupCallback = null;
 		}
 	}else if(gameStatus === "end"){
 		NextPage('GameTitle.html', 0);
@@ -98,15 +90,15 @@ function closePopup() {
 
 // 画面遷移
 function NextPage(url, seconds) {
-  const millis = seconds * 1000;
-  setTimeout(() => {
-    window.location.href = url;
+	const millis = seconds * 1000;
+	setTimeout(() => {
+    	window.location.href = url;
 }, millis);
 }
 
 // 名前取得
 function getName() {
-  const userName = sessionStorage.getItem("userName") || "冒険者";
+	const userName = sessionStorage.getItem("userName") || "冒険者";
 	return userName;
 }
 
@@ -131,15 +123,15 @@ function DamageEffect(img) {
 
 // 回復エフェクト
 function showHealEffect() {
-  const effect = document.getElementById("heal-effect");
-  
-  // 表示してアニメーション開始
-  effect.classList.add('show');
+	const effect = document.getElementById("heal-effect");
 
-  // 1秒後にアニメーション終わるので非表示に戻す
-  setTimeout(() => {
-    effect.classList.remove('show');
-  }, 3000);  // アニメーション時間に合わせる
+	// 表示してアニメーション開始
+	effect.classList.add('show');
+
+	// 1秒後にアニメーション終わるので非表示に戻す
+	setTimeout(() => {
+    	effect.classList.remove('show');
+  	}, 3000);  // アニメーション時間に合わせる
 }
 
 // タイピング風メッセージ

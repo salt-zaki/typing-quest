@@ -1,7 +1,7 @@
 /* .popup */
-/* .hidden {
+.popup.hidden {
 	display: none !important;
-} */
+}
 
 .typing-area.hidden {
   visibility: hidden;
