@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>GameRegister</title>
+    <link rel="stylesheet" href="css/gameTitle.css">
+    <link rel="stylesheet" href="css/gameSet.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics-compat.js"></script>
+    <!-- あなたの初期化ファイル -->
+    <script src="js/firebase-init.js"></script>
+</head>
+<body>
+    <h1>タイピングクエストⅦ</h1>
+    長老「勇者様...お名前は...」<br>
+    <input type="text" id="userNameInput" placeholder="名前を入力してください" />
+    <button id="setNameBtn">登録</button>
+    <div class="start-register" id="startRegister" style="display: inline;">
+        <p id="nameMsg1" style="display: none;"></p><br>
+        <a href="GameTitle.html" id="href1">戻る</a><br>
+    </div>
+
+    <div class="end-register" id="endRegister" style="display: none;">
+        <p id="nameMsg2">勇者様...世界の命運を託しましたぞ!!</p>
+        <a href="GameSet.html" id="href1" style="display: inline;">すすむ</a>
+    </div>
+
+    <script src="js/firebase-methods.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/GameSet.js"></script>
+</body>
+</html>

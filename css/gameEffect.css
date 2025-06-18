@@ -1,0 +1,74 @@
+/* 点滅アニメーション */
+@keyframes flash {
+  0%   { opacity: 1; }
+  25%  { opacity: 0; }
+  50%  { opacity: 1; }
+  75%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.hit {
+	animation: flash 0.4s ease-in-out 4; /* ← 3回繰り返す */
+}
+
+/* 回復エフェクト */
+#heal-effect {
+  display: none;
+  position: relative; /* この親になる */
+  width: 200px;
+  height: 50px;
+  left: -40vw;
+  bottom: -35vh;
+  pointer-events: none; /* その要素の上にマウスカーソルを置いても、クリックやホバーなどのユーザー操作を一切受け付けません。*/
+}
+
+#heal-effect.show {
+  display: block;
+  opacity: 1;
+}
+
+.sparkle1 {
+  position: absolute;
+  top: 35%;
+  left: -15%;
+  transform: translate(-50%, -50%); /* 真ん中に揃える */
+  width: 200px;
+  height: 30px;
+  background: radial-gradient(circle, rgba(1, 255, 191, 0.9) 0%, rgba(0,255,255,0) 70%);
+  border-radius: 50%;
+  animation: sparkleUp 1.0s ease-out forwards;
+}
+
+.sparkle2 {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: -25vh;
+  left: -34vw;
+  background: radial-gradient(circle, rgb(1, 255, 192) 0%, rgba(0,255,255,0) 70%);
+  border-radius: 50%;
+  animation: sparkleUp 1.5s ease-out forwards;
+}
+
+.heal-text {
+  width: 100px;
+  color: #00ffff;
+  font-weight: bold;
+  font-size: 24px;
+  position: absolute;
+  top: 5vh;
+  left: 0.5vw;
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+@keyframes sparkleUp {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-20px); opacity: 0; }
+}

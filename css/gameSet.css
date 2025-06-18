@@ -1,3 +1,23 @@
-#nameMsg {
+#nameMsg, #nameMsg1{
   color: red;
+}
+
+#href1{
+  font-size: 20px;
+}
+
+#userNameInput{
+  width: 25vw;      /* 横幅を指定 */
+  height: 40px;      /* 高さを指定 */
+  font-size: 20px;   /* 文字サイズも大きく */
+  padding: 8px;      /* 内側の余白（見た目に余裕を） */
+  border-radius: 6px; /* 角を丸める（オプション） */
+}
+
+#setNameBtn{
+  width: 5vw;      /* 横幅を指定 */
+  height: 55px;
+  font-size: 14px;   /* 文字サイズも大きく */
+  padding: 8px;      /* 内側の余白（見た目に余裕を） */
+  border-radius: 6px; /* 角を丸める（オプション） */
 }
