@@ -132,7 +132,7 @@ p {
 
 #text {
 	font-size:40px;
-	letter-spacing: -4px; /* 文字同士を近づける（マイナスで狭く） */
+	letter-spacing: 2px; /* 文字同士を近づける（マイナスで狭く） */
 }
 
 #message {

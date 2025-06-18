@@ -16,7 +16,7 @@ this.value = this.value.replace(/[^\x20-\x7E]/g, ''); // 半角英数字と記�
 });
 
 // タイマー
-const totalTime = 100 * 1000; // ミリ秒単位で正確に処理（5秒）
+const totalTime = 7 * 1000; // ミリ秒単位で正確に処理（5秒）
 let startTime;
 let timerRunning = true; // タイマー有効
 function startTimerBar() {
@@ -324,45 +324,6 @@ async function updateQuestions(No, level) { // Noとdifficultyの1件をshowText
     console.error("updateQuestions エラー:", err);
   }
 }
-
-/*
-// updateAllQuestions
-function updateAllQuestions() {
-  return fetch(`http://localhost:3000/typingQuestion/updateAll`)
-	.then(res => res.json())
-	.then(data => {
-		console.log(data.message);
-	})
-	.catch(err => {
-		console.error("updateAllQuestions エラー:", err);
-	});
-}
-
-// findQuestions
-function findQuestions(level){
-	return fetch(`http://localhost:3000/typingQuestion/find/${level}`)
-	.then(res => res.json())
-	.then(data => {
-		console.log(data.message);
-		return data.results; // 呼び出し元で受け取れるように return
-	})
-	.catch(err => {
-		console.error("updateAllQuestions エラー:", err);
-	});
-}
-
-// updateQuestions
-function updateQuestions(No,level){
-	return fetch(`http://localhost:3000/typingQuestion/update/${No}/${level}`)
-	.then(res => res.json())
-	.then(data => {
-		console.log(data.message);
-	})
-	.catch(err => {
-		console.error("updateAllQuestions エラー:", err);
-	});
-}
-*/
 
 //問題の表示
 function showQuestion() {
