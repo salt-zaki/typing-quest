@@ -27,6 +27,7 @@ function fastGameStatus() {
 	sessionStorage.setItem("gameStatus","play");
 	sessionStorage.setItem("StageLevel",0);
 	sessionStorage.setItem("DamageLevel",1);
+	sessionStorage.setItem("inputTime",7);
 }
 // nextステージ
 function nextGameStatus() {
@@ -51,23 +52,40 @@ function PopSet(buttonValue){
 	document.getElementById("endButton").textContent = buttonValue;
 }
 
+let keydownHandler = null;
 // POPUP表示
 function showPopup(msg1,msg2) {
 	console.log("showPopup log ");
 	console.log("msg1:", msg1, "msg2:", msg2);
+	document.getElementById("endButton").style.visibility = "hidden";
+	document.getElementById("Button-message").style.visibility = "hidden";
 	document.getElementById('popup-message1').textContent = msg1;
 	const msg2Elem = document.getElementById('popup-message2');
 	if (msg2Elem) {
 		msg2Elem.textContent = msg2 ?? ""; // msg2が未定義なら空文字
 	}
 	document.getElementById('popup').classList.remove('hidden');
-	document.getElementById('endButton').focus();
+	const endButton = document.getElementById('endButton');
+
+	// エンター・スペース押下でボタンをクリック
+	keydownHandler = (event) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			endButton.click();
+		}
+	};
+	endButton.addEventListener('keydown', keydownHandler);
 }
 
 function closePopup() {
 	console.log("closePopup log ");
 	document.getElementById('popup').classList.add('hidden'); // class="popup "にhiddenを追加する⇒非表示
 	const gameStatus = sessionStorage.getItem("gameStatus");
+
+	// イベントリスナー削除(エンター・スペース押下でボタンをクリック)
+	if (keydownHandler) {
+		endButton.removeEventListener('keydown', keydownHandler);
+		keydownHandler = null;
+	}
 
 	if (gameStatus === "next"){
 		nextGameStatus();
@@ -146,7 +164,7 @@ function tyipngMessage(message,MsgId,callback) {
       displayed += message[index];
       MsgId.innerHTML = displayed;
       index++;
-      setTimeout(typeChar, 100);
+      setTimeout(typeChar, 75);
     }else {
       // タイピング終了後にコールバックを実行
       if (callback) callback();

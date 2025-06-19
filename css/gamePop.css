@@ -78,3 +78,9 @@
   color: black;
   transform: scale(1.05); /* 少し拡大 */
 }
+
+
+#Button-message{
+  color: rgb(168, 168, 168);
+  font-size: 12px;
+}

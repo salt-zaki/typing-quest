@@ -28,11 +28,12 @@ function AbilityAttack(){
 	msg2Elem.remove(); // 2. 要素を削除
 
 	setTimeout(() => {
-		document.getElementById("endButton").style.visibility = "hidden";
 		showPopup(); // 0.5秒後に表示
 		setTimeout(() => { // 1秒後に実行
 			tyipngMessage(KillMsg, msg1Elem, () => {
 				document.getElementById("endButton").style.visibility = "visible";
+				document.getElementById("Button-message").style.visibility = "visible";
+				document.getElementById('endButton').focus();
 				document.body.appendChild(savedElement);  // 要素を復元（再追加）
 			});
 			}, 500);
@@ -46,13 +47,13 @@ function AbilityAttack(){
 }
 
 // タイマー
-const totalTime = 7 * 1000; // ミリ秒単位で正確に処理（5秒）
 let startTime;
 let timerRunning = true; // タイマー有効
 function startTimerBar() {
 	const bar = document.getElementById("timer-bar");
 	const input = document.getElementById("wordInput");
 	const message = document.getElementById("message");
+	const totalTime = 1000 * Number(sessionStorage.getItem("inputTime")); // ミリ秒単位で正確に処理（5秒）
 	timerRunning = true;
 	input.disabled = false; // 要素削除：input有効
 	input.focus(); // 要素inputにフォーカスを設定
@@ -98,9 +99,11 @@ async function statusCheck(gameStatus){
 		if(AbilityCount % 3 === 0){
 			level = 6; // ダメージlevel6
 			sessionStorage.setItem("gameStatus","AbilityAttack");
+			sessionStorage.setItem("inputTime",3);
 			await AbilityAttack();
 		}else {
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
+			sessionStorage.setItem("inputTime",7);
 		}
 		await findQuestions(level).then(result => {
 			questionList = result;
@@ -122,11 +125,12 @@ async function statusCheck(gameStatus){
 		msg2Elem.remove(); // 2. 要素を削除
 
 		setTimeout(() => {
-			document.getElementById("endButton").style.visibility = "hidden";
 			showPopup(); // 0.5秒後に表示
 			setTimeout(() => { // 3秒後に実行
 				tyipngMessage(nextMsg, msg1Elem, () => {
 					document.getElementById("endButton").style.visibility = "visible";
+					document.getElementById("Button-message").style.visibility = "visible";
+					document.getElementById('endButton').focus();
 					document.body.appendChild(savedElement);  // 要素を復元（再追加）
 				});
 			}, 500);
@@ -144,6 +148,9 @@ async function statusCheck(gameStatus){
 			msg1Elem.style.color = 'rgb(255,255,128)';
 			showPopup("CONGRATULATIONS", Player.Name + "の勝利です。");
 		}
+		document.getElementById("endButton").style.visibility = "visible";
+		document.getElementById("Button-message").style.visibility = "visible";
+		document.getElementById('endButton').focus();
 	}
 }
 
@@ -156,7 +163,7 @@ function updatePlayerHPBar() { // player
 	const playerHPPercentage = Player.HP;
 
 	// HP色変化
-	if (playerHPPercentage <= 0)	pHPBar.style.backgroundColor = "#444";
+	if (playerHPPercentage <= 0) pHPBar.style.backgroundColor = "#444";
 	else if (playerHPPercentage <= Player.MaxHP * 0.3) pHPBar.style.backgroundColor = "red";
 	else if (playerHPPercentage <= Player.MaxHP * 0.6) pHPBar.style.backgroundColor = "orange";
 	playerHPBar.style.width = (Player.MaxHP * unitWidthPerHP) + "px";
@@ -169,9 +176,7 @@ function updateEnemyHPBar() { // enemy
 	const enemyHPPercentage = Enemy.HP;
 
 	// HP色変化
-	if (enemyHPPercentage <= 0){
-	    sessionStorage.setItem("status","next");
-	}else if (enemyHPPercentage <= (0.3 * Enemy.MaxHP)) {
+	if (enemyHPPercentage <= (0.3 * Enemy.MaxHP)) {
 		sessionStorage.setItem("DamageLevel",4);
 	    eHPBar.style.backgroundColor = "red";
 	}else if (enemyHPPercentage <= (0.6 * Enemy.MaxHP)) {
@@ -316,7 +321,7 @@ async function updateQuestions(No, level) { // Noとdifficultyの1件をshowText
 		}
 
     	const docRef = querySnapshot.docs[0].ref;
-    	await docRef.update({ showText: "false" });
+    	await docRef.update({ showText: false });
 		console.log(`No=${No}, level=${level} のデータを非表示に更新しました`);
 	} catch (err) {
     	console.error("updateQuestions エラー:", err);
@@ -385,6 +390,7 @@ document.addEventListener("DOMContentLoaded", async function () { // HTMLが読�
 	// スペルを一文字ごとに確認し色付けする
 	input.addEventListener("input", () => {  // 定義したinput.入力するたびに処理実行
 		let correctWord = document.getElementById("text").textContent; // タイピング文字
+		input.focus(); // 要素inputにフォーカスを設定
 		let userInput = input.value; // 入力するたびに最新値
 		console.log("入力文字：" + userInput); // 入力文字
 

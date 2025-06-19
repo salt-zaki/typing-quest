@@ -14,18 +14,37 @@
 </head>
 <body>
   <h1>タイピングクエストⅦ</h1>
-  そなたの名は…<br>
+  <p>そなたの名は…</p>
   <input type="text" id="userNameInput" placeholder="名前を入力してください" />
-  <button id="getNameBtn">決定</button><br>
-  <p id="nameMsg" style="display: none;"></p><br>
-  <a href="GameTitle.html">戻る</a>
+  <button id="getNameBtn">決定</button>
+  <p class ="error-message" id="nameMsg"></p>
+  <a href="GameTitle.html" id="href">タイトルへ戻る</a>
 
   <!-- BOSS選択 -->
   <div class="boss-selection" id="bossSelection" style="visibility: hidden;">
     <div class="boss1">
-      <img src="img/enemyImg1-1.jpg" alt="魔王" id="bossAction1" >
+      <a href="GameStart.html" class="linkBoss">
+        <img src="img/enemyImg1-1.jpg" alt="りゅうおう" id="bossAction1" >
+      </a>
     </div>
 
+    <div class="boss2">
+      <a href="GameStart.html" class="linkBoss">
+        <img src="img/enemyImg1-1.jpg" alt="魔王" id="bossAction2" >
+      </a>
+    </div>
+
+    <div class="boss3">
+      <a href="GameStart.html" class="linkBoss">
+        <img src="img/enemyImg1-1.jpg" alt="魔王" id="bossAction3" >
+      </a>
+    </div>
+
+    <div class="boss4">
+      <a href="GameStart.html" class="linkBoss">
+        <img src="img/enemyImg1-1.jpg" alt="魔王" id="bossAction4" >
+      </a>
+    </div>
   </div>
 
   <script src="js/firebase-methods.js"></script>

@@ -1,8 +1,17 @@
-#nameMsg{
+/* スタイル例 */
+.error-message {
+  height: 1.5em;             /* 高さを固定しておく */
+  visibility: hidden;        /* 見えないけどスペース確保 */
   color: red;
+  margin: 0;
+  padding: 0;
 }
 
-#href1{
+p{
+  font-size: 24px
+}
+
+#href{
   font-size: 20px;
 }
 
@@ -14,10 +23,25 @@
   border-radius: 6px; /* 角を丸める（オプション） */
 }
 
-#setNameBtn{
+#setNameBtn, #getNameBtn{
   width: 5vw;      /* 横幅を指定 */
   height: 55px;
   font-size: 14px;   /* 文字サイズも大きく */
   padding: 8px;      /* 内側の余白（見た目に余裕を） */
   border-radius: 6px; /* 角を丸める（オプション） */
+}
+
+/* GameSet.html 特有css */
+.boss-selection{
+  display: flex;
+  justify-content: center; /* 真ん中寄せ */
+  align-items: center;     /* 縦方向中央揃え */
+  gap: 10%;               /* 画像の間隔 */
+  visibility: hidden;     /* 初期非表示ならJSで切り替える */
+  margin-top: 3%;
+}
+
+img{
+  width: 15vw;
+  height: auto;
 }

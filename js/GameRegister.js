@@ -8,7 +8,7 @@ document.getElementById("setNameBtn").addEventListener("click", async function (
   btn.disabled = false;
 
   if (!userName) {
-    nameMsg.style.display = "inline"; // 表示する
+    nameMsg.style.visibility = "visible"; // 表示する
     nameMsg.innerText = "名前が入力されていません";
     console.log("名前が未入力です");
     return;
@@ -17,12 +17,14 @@ document.getElementById("setNameBtn").addEventListener("click", async function (
   const result = await addUserRegister(userName); // 登録
 
   if (!result){
-    nameMsg.style.display = "inline"; // 表示する
+    nameMsg.style.visibility = "visible"; // 表示する
     nameMsg.innerText = userName + "は既に登録されています";
     console.log("登録済みユーザー名が入力されました");
     return;
   }
 
+  nameMsg.style.visibility = "visible"; // 表示する
+  nameMsg.style.color = "white";
   nameMsg.innerText = "勇者様...世界の命運を託しましたぞ!!";
   const link = document.getElementById("href");
   link.href = "GameSet.html";  // ここで遷移先を変更
