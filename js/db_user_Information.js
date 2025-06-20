@@ -55,3 +55,35 @@ async function findUser(userName) {
         return false;
 	}
 }
+
+// ユーザー情報更新
+async function updateUserInfo(userName,stage) {
+    const db = window.db;
+
+    try {
+        // userName の重複チェック
+        const querySnapshot = await db.collection("user_Information") // table指定
+        .where("userName", "==", userName)
+        .get();
+
+        if (querySnapshot.empty) { // クエリ結果が空白の場合
+            console.warn("ユーザー名が見つかりません:", userName);
+            return false; // 更新しない
+        }
+
+        // stageX の形式でフィールド名を生成
+        const stageKey = `stage${stage}`; // stageKey:カラム名を文字列で作成
+        const docRef = querySnapshot.docs[0].ref; // .ref:ドキュメントの参照先をdocRefに指定している
+
+        // 指定の stageX だけ true に更新（他は変更しない）
+        await docRef.update({
+            [stageKey]: true
+        });
+
+        console.log("更新完了");
+        return true;
+    } catch (error) {
+        console.error("ステージ更新エラー:", error);
+        return false;
+    }
+}

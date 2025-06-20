@@ -90,11 +90,29 @@
 
   <!-- script処理 -->
   <script src="js/firebase-methods.js"></script>
+  <script src="js/db_user_Information.js"></script>
+  <script src="js/db_typing_questions.js"></script>
   <script src="js/Bean.js"></script>
   <script src="js/common.js"></script>
-  <script src="js/GMBattle.js"></script>
   <script>
+    const i = sessionStorage.getItem("stageNo");
+    console.log(i);
+    const isValidStage = ["1", "2", "3", "4", "5"].includes(i); // バリデーション（1〜5のいずれか）
 
+    if (!isValidStage) {
+      // 不正な場合はトップなどに戻す
+      alert("読み込みエラーです。タイトルに戻ります。");
+      window.location.href = "GameTitle.html";
+    } else {
+      const jsFile = "js/GMBattle" + i + ".js"; // 例: js/GMBattle3.js
+      const script = document.createElement("script"); // scriptタグを作成
+      script.src = jsFile; // src属性にファイルパスを設定
+      // ファイルの読み込みが完了したら初期化関数を呼び出す（任意）
+      script.onload = () => {
+        if (typeof initBattle === "function") initBattle(); // GMBattle*.js 側で定義された初期化関数
+      };
+      document.body.appendChild(script); // 実行される
+    }
   </script>
 </body>
 </html>

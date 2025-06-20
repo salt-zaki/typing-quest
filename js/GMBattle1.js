@@ -90,14 +90,15 @@ function startTimerBar() {
 	requestAnimationFrame(updateBar);
 }
 
-let AbilityCount = 2; // 特殊攻撃カウント
-// status判定及び、ゲーム管理
+let AbilityCount = 1; // 特殊攻撃カウント
+// ゲーム管理
 async function statusCheck(gameStatus){
 	if (gameStatus === "play"){
 		let level
 		if(sessionStorage.getItem("StageLevel") === "1") AbilityCount++;
 		if(AbilityCount % 3 === 0){
 			level = 6; // ダメージlevel6
+			sessionStorage.setItem("DamageLevel","5");
 			sessionStorage.setItem("gameStatus","AbilityAttack");
 			sessionStorage.setItem("inputTime",3);
 			await AbilityAttack();
@@ -145,6 +146,7 @@ async function statusCheck(gameStatus){
 			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
 		}else{
+			updateUserInfo(Player.Name,2); // クリアstageを更新
 			msg1Elem.style.color = 'rgb(255,255,128)';
 			showPopup("CONGRATULATIONS", Player.Name + "の勝利です。");
 		}
@@ -203,24 +205,24 @@ function DamageLevel(level, hitDamage,DummyHP) {
 				x = 1;
 				break;
 			case 2:
-				ans = 10;
+				ans = 1000;
 				x = 1.5;
 				break;
 			case 3:
 				ans = 20;
-				x = 1.5;
+				x = 1.0;
 				break;
 			case 4:
 				ans = 20;
-				x = 2;
+				x = 1.5;
 				break;
 			case 5:
 				ans = 20;
-				x = 2.5;
+				x = 2.0;
 				break;
 			case 6:
-				ans = 20;
-				x = 4;
+				ans = 30;
+				x = 2;
 				break;
 			default:
 				ans = 5;
@@ -235,7 +237,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	return DummyHP;
 }
 
-// HPからのstatus管理
+// HP・status管理
 function damageJudge(level, hitDamage) {
 	let DummyHP;
 	if(hitDamage === "player") {
@@ -264,69 +266,69 @@ function damageJudge(level, hitDamage) {
 	}
 }
 
-// 問題集取得function
-let questionList = []; // 問題リスト格納先
-let randomIndex; // index
-async function updateAllQuestions() { // 全データの showText を true に更新
-	db = window.db;
-	try {
-    	const querySnapshot = await db.collection("typing_questions").get();
-    	const updatePromises = [];
+// // 問題集取得function
+// let questionList = []; // 問題リスト格納先
+// let randomIndex; // index
+// async function updateAllQuestions() { // 全データの showText を true に更新
+// 	db = window.db;
+// 	try {
+//     	const querySnapshot = await db.collection("typing_questions").get();
+//     	const updatePromises = [];
 
-    	querySnapshot.forEach((docSnap) => {
-		const docRef = db.collection("typing_questions").doc(docSnap.id);
-		updatePromises.push(docRef.update({ showText: "true" }));
-    	});
+//     	querySnapshot.forEach((docSnap) => {
+// 		const docRef = db.collection("typing_questions").doc(docSnap.id);
+// 		updatePromises.push(docRef.update({ showText: "true" }));
+//     	});
 
-    	await Promise.all(updatePromises);
-		sessionStorage.setItem("firstUpdate", "false");
-    	console.log("全データの showText を true に更新しました");
-	} catch (err) {
-    	console.error("updateAllQuestions エラー:", err);
-	}
-}
-async function findQuestions(level) { // showText = "true" かつdifficulty一致のデータを取得
-	db = window.db;
-	try {
-    	const querySnapshot = await db
-		.collection("typing_questions")
-		.where("difficulty", "==", level)
-		.where("showText", "==", "true")
-		.get();
+//     	await Promise.all(updatePromises);
+// 		sessionStorage.setItem("firstUpdate", "false");
+//     	console.log("全データの showText を true に更新しました");
+// 	} catch (err) {
+//     	console.error("updateAllQuestions エラー:", err);
+// 	}
+// }
+// async function findQuestions(level) { // showText = "true" かつdifficulty一致のデータを取得
+// 	db = window.db;
+// 	try {
+//     	const querySnapshot = await db
+// 		.collection("typing_questions")
+// 		.where("difficulty", "==", level)
+// 		.where("showText", "==", "true")
+// 		.get();
 
-    	const results = [];
-    	querySnapshot.forEach((docSnap) => {
-		results.push(docSnap.data());
-    	});
+//     	const results = [];
+//     	querySnapshot.forEach((docSnap) => {
+// 		results.push(docSnap.data());
+//     	});
 
-    	console.log(`${results.length} 件取得（level=${level}, showText=true）`);
-    	return results;
-	} catch (err) {
-    	console.error("findQuestions エラー:", err);
-    	return [];
-	}
-}
-async function updateQuestions(No, level) { // Noとdifficultyの1件をshowText:"false"に更新
-	db = window.db;
-	try {
-    	const querySnapshot = await db
-		.collection("typing_questions")
-		.where("No", "==", No)
-		.where("difficulty", "==", level)
-		.get();
+//     	console.log(`${results.length} 件取得（level=${level}, showText=true）`);
+//     	return results;
+// 	} catch (err) {
+//     	console.error("findQuestions エラー:", err);
+//     	return [];
+// 	}
+// }
+// async function updateQuestions(No, level) { // Noとdifficultyの1件をshowText:"false"に更新
+// 	db = window.db;
+// 	try {
+//     	const querySnapshot = await db
+// 		.collection("typing_questions")
+// 		.where("No", "==", No)
+// 		.where("difficulty", "==", level)
+// 		.get();
 
-    	if (querySnapshot.empty) {
-			console.warn("該当するデータが見つかりませんでした");
-			return;
-		}
+//     	if (querySnapshot.empty) {
+// 			console.warn("該当するデータが見つかりませんでした");
+// 			return;
+// 		}
 
-    	const docRef = querySnapshot.docs[0].ref;
-    	await docRef.update({ showText: false });
-		console.log(`No=${No}, level=${level} のデータを非表示に更新しました`);
-	} catch (err) {
-    	console.error("updateQuestions エラー:", err);
-	}
-}
+//     	const docRef = querySnapshot.docs[0].ref;
+//     	await docRef.update({ showText: false });
+// 		console.log(`No=${No}, level=${level} のデータを非表示に更新しました`);
+// 	} catch (err) {
+//     	console.error("updateQuestions エラー:", err);
+// 	}
+// }
 
 //問題の表示
 function showQuestion() {
@@ -360,9 +362,8 @@ function showQuestion() {
 
 let typingCount; // タイピングカウント
 // メイン //
-// ページ読み込み時に開始
-document.addEventListener("DOMContentLoaded", async function () { // HTMLが読み込まれたタイミングで処理を実行
-	// 初期処理
+// // 初期化関数を実行して読み込み時に開始。jsファイルを変数にしたため読込時の発火が使用できなくなったので初期化してる
+async function initBattle() {
 	console.log("Window loaded");  // ここでイベントが実行されているかを確認
 	document.getElementById('popup').classList.add('hidden');
 	updatePlayerHPBar();
@@ -408,13 +409,13 @@ document.addEventListener("DOMContentLoaded", async function () { // HTMLが読�
 				showHealEffect(); // 回復エフェクト
 				typingCount = 0;
 			}
-    	} else {
-      		charSpan.style.color = "white"; // 初期状態 or 間違い → 白色
+		} else {
+			charSpan.style.color = "white"; // 初期状態 or 間違い → 白色
 			userInput = userInput.slice(0, -1); // 正しくない文字を入力しているので削除する
 			typingCount = 0;
 			input.value = userInput; // 更新した入力内容を反映
 			return;
-    	}
+		}
 		// すべて正しく入力されたら自動送信
 		if (userInput === correctWord) {
 			timerRunning = false; // タイマー停止
@@ -431,4 +432,4 @@ document.addEventListener("DOMContentLoaded", async function () { // HTMLが読�
 			}, 3000);
 		}
 	});
-});
+}

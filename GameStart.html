@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>GameTitle</title>
+  <title>GameStart</title>
   <link rel="stylesheet" href="css/gameTitle.css">
 </head>
 <body>
@@ -15,12 +15,11 @@
     fastGameStatus();
     // 表示メッセージ
     const message = "勇者 " + getName() + "<br>この先に魔王が待ち構えています。<br>魔王を倒し、この世界に平和を!!!";
-    sessionStorage.setItem("status", "start");
     // 読み込み時に起動
     window.addEventListener("DOMContentLoaded", () => {
       const MsgId = document.getElementById("typingText");
       tyipngMessage(message,MsgId); // タイピング風表示
-      NextPage('GameBattle.html', 10); // 画面遷移の処理
+      NextPage('GameBattle.html', 5); // 画面遷移の処理
     });
   </script>
 </body>
