@@ -82,17 +82,17 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("選択：りゅうおう");
         break;
       case "bossId2":
-        Estatus = new Status("邪神ハーゴン", 100, 100, "enemyImg2-1.jpg");
+        Estatus = new Status("邪神ハーゴン", 115, 115, "enemyImg2-1.jpg");
         sessionStorage.setItem("stageNo",2);
         console.log("選択：邪神ハーゴン");
         break;
       case "bossId3":
-        Estatus = new Status("エスターク", 100, 100, "enemyImg3-1.jpg");
+        Estatus = new Status("エスターク", 130, 130, "enemyImg3-1.jpg");
         sessionStorage.setItem("stageNo",3);
         console.log("選択：エスターク");
         break;
       case "bossId4":
-        Estatus = new Status("バラモス", 100, 100, "enemyImg4-1.jpg");
+        Estatus = new Status("バラモス", 150, 150, "enemyImg4-1.jpg");
         sessionStorage.setItem("stageNo",4);
         console.log("選択：バラモス");
         break;

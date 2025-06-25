@@ -202,11 +202,11 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 10;
+				ans = 100;
 				x = 1;
 				break;
 			case 2:
-				ans = 10;
+				ans = 1000;
 				x = 1.5;
 				break;
 			case 3:

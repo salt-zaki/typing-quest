@@ -6,7 +6,11 @@ let randomIndex; // index
 async function updateAllQuestions() {
 	db = window.db;
 	try {
-    	const querySnapshot = await db.collection("typing_questions").get();
+		let stage = Number(sessionStorage.getItem("stageNo")); // stageを取得
+    	const querySnapshot = await db
+			.collection("typing_questions")
+			.where("stage", "==", stage)
+			.get();
     	const updatePromises = [];
 
     	querySnapshot.forEach((docSnap) => {
@@ -23,13 +27,14 @@ async function updateAllQuestions() {
 }
 
 // showText = "true" かつdifficulty一致のデータを取得
-async function findQuestions(level) {
+async function findQuestions(level,stage) {
 	db = window.db;
 	try {
     	const querySnapshot = await db
 		.collection("typing_questions")
 		.where("difficulty", "==", level)
 		.where("showText", "==", "true")
+		.where("stage", "==", stage)
 		.get();
 
     	const results = [];
@@ -46,13 +51,14 @@ async function findQuestions(level) {
 }
 
 // Noとdifficultyの1件をshowText:"false"に更新
-async function updateQuestions(No, level) {
+async function updateQuestions(question, level, stage) {
 	db = window.db;
 	try {
     	const querySnapshot = await db
 		.collection("typing_questions")
-		.where("No", "==", No)
+		.where("question", "==", question)
 		.where("difficulty", "==", level)
+		.where("stage", "==", stage)
 		.get();
 
     	if (querySnapshot.empty) {
@@ -62,7 +68,7 @@ async function updateQuestions(No, level) {
 
     	const docRef = querySnapshot.docs[0].ref;
     	await docRef.update({ showText: false });
-		console.log(`No=${No}, level=${level} のデータを非表示に更新しました`);
+		console.log(`question=${question}, level=${level} のデータを非表示(false)に更新しました`);
 	} catch (err) {
     	console.error("updateQuestions エラー:", err);
 	}

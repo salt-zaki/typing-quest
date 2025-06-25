@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>sample1</title>
+</head>
+<body>
+    <p id="translation">ぴちぴち</p>
+    <p id="text"></p>
+    <input id="wordInput" type="text" placeholder="ローマ字で入力" />
+
+<script>
+const questionList = [
+    { text: "pitipiti", translation: "ぴちぴち" }
+];
+let randomIndex = 0;
+
+function showQuestion() {
+    let questionE = questionList[randomIndex].text;
+    let questionJ = questionList[randomIndex].translation;
+
+    const text = document.getElementById("text");
+    const translation = document.getElementById("translation");
+    const input = document.getElementById("wordInput");
+
+    text.innerHTML = "";
+    translation.textContent = questionJ;
+    input.value = "";
+
+    for (let i = 0; i < questionE.length; i++) {
+        const span = document.createElement("span");
+        span.textContent = questionE[i];
+        span.style.color = "white";
+        text.appendChild(span);
+    }
+
+    input.disabled = false;
+    input.focus();
+}
+
+const input = document.getElementById("wordInput");
+const text = document.getElementById("text");
+
+input.addEventListener("input", () => {
+    const userInput = input.value;
+    const length = text.childNodes.length;
+
+    for (let i = 0; i < length; i++) {
+        const span = text.childNodes[i];
+        if (i < userInput.length) {
+            if (span.textContent === userInput[i]) {
+                span.style.color = "gray";
+            } else {
+                span.style.color = "red";
+            }
+        } else {
+            span.style.color = "white";
+        }
+    }
+
+    const correctWord = Array.from(text.childNodes).map(span => span.textContent).join("");
+    if (userInput === correctWord) {
+        input.disabled = true;
+        alert("クリア！");
+    }
+});
+
+showQuestion();
+</script>
+</body>
+</html>
