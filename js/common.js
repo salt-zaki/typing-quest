@@ -27,13 +27,45 @@ function fastGameStatus() {
 	sessionStorage.setItem("gameStatus","play");
 	sessionStorage.setItem("StageLevel",0);
 	sessionStorage.setItem("DamageLevel",1);
-	sessionStorage.setItem("inputTime",7);
+	sessionStorage.setItem("inputTime",200); // 初期タイマー設定
 }
+
 // nextステージ
-function nextGameStatus() {
-	const Estatus = new Status("しんりゅうおう", 200, 200, "enemyImg1-2.jpg");
-	const Pstatus = new Status(Player.Name, 120, 120, "playerImg1-1.jpg");
+
+// nextボス
+function nextBossStatus(){
+	let stage = Number(sessionStorage.getItem("stageNo"));
+	let Estatus;
+	switch (stage){
+		case 1 :
+			Estatus = new Status("竜王", 200, 200, "enemyImg1-2.jpg");
+			break;
+		case 2 :
+			Estatus = new Status("破壊神シドー", 200, 200, "enemyImg2-2.jpg");
+			break;
+		case 3 :
+			Estatus = new Status("デスピサロ", 230, 230, "enemyImg3-2.jpg");
+			break;
+		case 4 :
+			Estatus = new Status("ゾーマ", 250, 250, "enemyImg4-2.jpg");
+			break;
+		case 5 :
+			Estatus = new Status("ゾーマ", 200, 200, "enemyImg5-2.jpg");
+			break;
+		default :
+			console.log("Error");
+			break;
+
+	}
 	sessionStorage.setItem("Estatus", JSON.stringify(Estatus));
+}
+
+// nextステージ設定
+function nextGameStatus() {
+	nextBossStatus();
+	// const Estatus = new Status("しんりゅうおう", 200, 200, "enemyImg1-2.jpg");
+	const Pstatus = new Status(Player.Name, 120, 120, "playerImg1-1.jpg");
+	// sessionStorage.setItem("Estatus", JSON.stringify(Estatus));
 	sessionStorage.setItem("Pstatus", JSON.stringify(Pstatus));
 	sessionStorage.setItem("gameStatus","play");
 	sessionStorage.setItem("StageLevel",1);
@@ -171,4 +203,108 @@ function tyipngMessage(message,MsgId,callback) {
     }
   }
   typeChar(); // 初回起動
+}
+
+// ローマ字辞書
+const ROMAJI_DICT = {
+    "あ": ["a"], "い": ["i"], "う": ["u"], "え": ["e"], "お": ["o"],
+    "か": ["ka"], "き": ["ki"], "く": ["ku"], "け": ["ke"], "こ": ["ko"],
+    "さ": ["sa"], "し": ["shi", "si"], "す": ["su"], "せ": ["se"], "そ": ["so"],
+    "た": ["ta"], "ち": ["chi", "ti"], "つ": ["tsu", "tu"], "て": ["te"], "と": ["to"],
+    "な": ["na"], "に": ["ni"], "ぬ": ["nu"], "ね": ["ne"], "の": ["no"],
+    "は": ["ha"], "ひ": ["hi"], "ふ": ["fu", "hu"], "へ": ["he"], "ほ": ["ho"],
+    "ま": ["ma"], "み": ["mi"], "む": ["mu"], "め": ["me"], "も": ["mo"],
+    "や": ["ya"], "ゆ": ["yu"], "よ": ["yo"],
+    "ら": ["ra"], "り": ["ri"], "る": ["ru"], "れ": ["re"], "ろ": ["ro"],
+    "わ": ["wa"], "を": ["wo"], "ん": ["n"],
+    "が": ["ga"], "ぎ": ["gi"], "ぐ": ["gu"], "げ": ["ge"], "ご": ["go"],
+    "ざ": ["za"], "じ": ["ji", "zi"], "ず": ["zu"], "ぜ": ["ze"], "ぞ": ["zo"],
+    "だ": ["da"], "ぢ": ["di"], "づ": ["du"], "で": ["de"], "ど": ["do"],
+    "ば": ["ba"], "び": ["bi"], "ぶ": ["bu"], "べ": ["be"], "ぼ": ["bo"],
+    "ぱ": ["pa"], "ぴ": ["pi"], "ぷ": ["pu"], "ぺ": ["pe"], "ぽ": ["po"],
+    "ぁ": ["xa", "la", "a"], "ぃ": ["xi", "li", "i"], "ぅ": ["xu", "lu", "u"], "ぇ": ["xe", "le", "e"], "ぉ": ["xo", "lo", "o"],
+    "ゃ": ["xya", "lya"], "ゅ": ["xyu", "lyu"], "ょ": ["xyo", "lyo"], "ゎ": ["xwa", "lwa"],
+
+    // 拗音（2文字）
+    "きゃ": ["kya"], "きぃ": ["kyi"], "きゅ": ["kyu"], "きぇ": ["kye"], "きょ": ["kyo"],
+    "ぎゃ": ["gya"], "ぎぃ": ["gyi"], "ぎゅ": ["gyu"], "ぎぇ": ["gye"], "ぎょ": ["gyo"],
+    "しゃ": ["sha", "sya"], "しぃ": ["syi"], "しゅ": ["shu", "syu"], "しぇ": ["she", "sye"], "しょ": ["sho", "syo"],
+    "じゃ": ["ja", "jya", "zya"], "じぃ": ["jyi", "zyi"], "じゅ": ["ju", "jyu", "zyu"], "じぇ": ["je", "jye", "zye"], "じょ": ["jo", "jyo", "zyo"],
+    "ちゃ": ["cha", "cya", "tya"], "ちぃ": ["cyi", "tyi"], "ちゅ": ["chu", "cyu", "tyu"], "ちぇ": ["che", "cye", "tye"], "ちょ": ["cho", "cyo", "tyo"],
+    "にゃ": ["nya"], "にぃ": ["nyi"], "にゅ": ["nyu"], "にぇ": ["nye"], "にょ": ["nyo"],
+    "ひゃ": ["hya"], "ひぃ": ["hyi"], "ひゅ": ["hyu"], "ひぇ": ["hye"], "ひょ": ["hyo"],
+    "びゃ": ["bya"], "びぃ": ["byi"], "びゅ": ["byu"], "びぇ": ["bye"], "びょ": ["byo"],
+    "ぴゃ": ["pya"], "ぴぃ": ["pyi"], "ぴゅ": ["pyu"], "ぴぇ": ["pye"], "ぴょ": ["pyo"],
+    "みゃ": ["mya"], "みぃ": ["myi"], "みゅ": ["myu"], "みぇ": ["mye"], "みょ": ["myo"],
+    "りゃ": ["rya"], "りぃ": ["ryi"], "りゅ": ["ryu"], "りぇ": ["rye"], "りょ": ["ryo"],
+    "うぁ": ["wha"], "うぃ": ["wi", "whi"], "うぇ": ["we", "whe"], "うぉ": ["wo", "who"],
+    "ゔぁ": ["va"], "ゔぃ": ["vi"], "ゔ": ["vu"], "ゔぇ": ["ve"], "ゔぉ": ["vo"], "ゔゅ": ["vyu"],
+    "くぁ": ["kwa", "qa"], "くぃ": ["qi"], "くぇ": ["qe"], "くぉ": ["qo"],
+    "ぐぁ": ["gwa"], "ぐぃ": ["gwi"], "ぐぅ": ["gwu"], "ぐぇ": ["gwe"], "ぐぉ": ["gwo"],
+    "てゃ": ["tha"], "てぃ": ["thi"], "てゅ": ["thu"], "てぇ": ["the"], "てょ": ["tho"],
+    "でゃ": ["dha"], "でぃ": ["dhi"], "でゅ": ["dhu"], "でぇ": ["dhe"], "でょ": ["dho"],
+    "ふぁ": ["fa"], "ふぃ": ["fi"], "ふぇ": ["fe"], "ふぉ": ["fo"], "ふゅ": ["fyu"],
+    "つぁ": ["tsa"], "つぃ": ["tsi"], "つぇ": ["tse"], "つぉ": ["tso"],
+
+    // 記号・句読点・補助文字
+    "ー": ["-"],
+    "!": ["!"],
+    "?": ["?"],
+    "？": ["?"],
+    ",": [","],
+    "、": [","],
+    ".": ["."],
+    "。": ["."],
+    "（": ["("],
+    "）": [")"],
+    "「": ["["],
+    "」": ["]"],
+    "・": ["/"],
+    "っ": ["ltu", "xtu", "ltu"], // 促音は別途ロジックで子音重ねを処理するのが一般的
+    "ッ": ["ltu", "xtu", "ltu"], // カタカナで使う場合も同様
+};
+
+// DOM要素
+const translation = document.getElementById("translation").textContent.trim();
+const text = document.getElementById("text");
+const romajiDisplay = document.getElementById("romajiDisplay");
+const input = document.getElementById("wordInput");
+
+// ひらがな1文字からローマ字候補を取得する（ROMAJI_DICTは別途用意）
+function getRomajiCandidates(kanaChar) {
+  return ROMAJI_DICT[kanaChar] || [kanaChar]; // なければそのまま返す
+}
+
+// ひらがな文字列から全ローマ字候補パターンを生成する（全組み合わせ）
+function generateAllRomajiCandidates(kanaStr) {
+	const kanaChars = kanaStr.split("");
+	let results = [""];
+
+	for (const kana of kanaChars) {
+		const candidates = getRomajiCandidates(kana);
+		let temp = [];
+		for (const prefix of results) {
+			for (const c of candidates) {
+			temp.push(prefix + c);
+			}
+		}
+		results = temp;
+	}
+	return results;
+}
+
+// 入力値が複数ローマ字候補のいずれかのprefixになっているか判定する
+function isInputPrefixOfAnyCandidate(input, candidates) {
+	for (const candidate of candidates) {
+		if (candidate.startsWith(input)) return true;
+	}
+	return false;
+}
+
+// 入力値が複数ローマ字候補のどれかと完全一致しているか判定する
+function isInputExactlyAnyCandidate(input, candidates) {
+	for (const candidate of candidates) {
+		if (candidate === input) return true;
+	}
+	return false;
 }

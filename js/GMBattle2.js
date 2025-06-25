@@ -100,11 +100,11 @@ async function statusCheck(gameStatus){
 			level = 6; // ダメージlevel6
 			sessionStorage.setItem("DamageLevel","5");
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",3);
+			sessionStorage.setItem("inputTime",7);
 			await AbilityAttack();
 		}else {
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",7);
+			sessionStorage.setItem("inputTime",200);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		await findQuestions(level,stage).then(result => {
@@ -202,7 +202,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 10;
+				ans = 100;
 				x = 1;
 				break;
 			case 2:
@@ -267,11 +267,19 @@ function damageJudge(level, hitDamage) {
 	}
 }
 
+let originalRomajiCandidates = []; // 複数ローマ字候補保持
+
 //問題の表示
 function showQuestion() {
 	let questionE = questionList[randomIndex].text;
 	let questionJ = questionList[randomIndex].translation;
 	console.log("問題文：" + questionList[randomIndex].text + "/" + questionList[randomIndex].translation);
+
+	// ここで複数ローマ字候補を生成
+	originalRomajiCandidates = generateAllRomajiCandidates(questionJ);
+
+	// UI表示は初期状態は questionE の一つ目を使う（画面表示用）
+	const displayRomaji = originalRomajiCandidates[0];
 
   	const text = document.getElementById("text"); // タイピング文字
 	const translation = document.getElementById("translation"); // 日本語
@@ -283,13 +291,21 @@ function showQuestion() {
   	input.value = ""; // 入力欄をクリア
 	message.textContent = "正しく入力してください";
 
-	// <span> で分解して1文字ずつ表示
-	for (let i = 0; i < questionE.length; i++) {
+	for (let i = 0; i < displayRomaji.length; i++) {
 		const span = document.createElement("span");
-		span.id = `char${i}`; // spanのidを一文字づつ設定
-		span.textContent = questionE[i];
+		span.id = `char${i}`;
+		span.textContent = displayRomaji[i];
+		span.style.color = "white";
 		text.appendChild(span);
 	}
+
+	// // <span> で分解して1文字ずつ表示
+	// for (let i = 0; i < questionE.length; i++) {
+	// 	const span = document.createElement("span");
+	// 	span.id = `char${i}`; // spanのidを一文字づつ設定
+	// 	span.textContent = questionE[i];
+	// 	text.appendChild(span);
+	// }
 
 	text.style.visibility = "visible";
 	translation.style.visibility = "visible";
@@ -337,25 +353,63 @@ async function initBattle() {
 		const charText = document.getElementById(`char${userInput.length - 1}`).innerText; // <span>内のテキストを取得
 		console.log("一致文字：" + charSpan);
 
-		if(userInput[userInput.length - 1] === charText){
-			charSpan.style.color = "gray"; // 正しく入力 → 灰色
-			typingCount++;
-			if(typingCount >= 15){ // 回復処理
+		// 候補のうち、userInputをprefixとして満たすものだけに絞る
+		if (!isInputPrefixOfAnyCandidate(userInput, originalRomajiCandidates)) {
+			// 不正入力：最後の1文字を削除
+			input.value = userInput.slice(0, -1);
+			userInput = input.value;
+			typingCount = 0; // ミスったのでカウントリセット
+		} else {
+			typingCount++; // 正しい入力文字数カウント
+
+			// 回復処理
+			if (typingCount >= 15) {
 				Player.HP += 15;
-				if(Player.HP >= Player.MaxHP) Player.HP = Player.MaxHP;
+				if (Player.HP > Player.MaxHP) Player.HP = Player.MaxHP;
 				updatePlayerHPBar();
-				showHealEffect(); // 回復エフェクト
+				showHealEffect();
 				typingCount = 0;
 			}
-		} else {
-			charSpan.style.color = "white"; // 初期状態 or 間違い → 白色
-			userInput = userInput.slice(0, -1); // 正しくない文字を入力しているので削除する
-			typingCount = 0;
-			input.value = userInput; // 更新した入力内容を反映
-			return;
 		}
+
+		// 表示の更新（画面上に最も近い候補を表示して色分け）
+		let matchedCandidate = originalRomajiCandidates.find(c => c.startsWith(userInput));
+		if (!matchedCandidate) matchedCandidate = originalRomajiCandidates[0];
+
+		const textElem = document.getElementById("text");
+		textElem.innerHTML = "";
+
+		let updatedText = userInput + matchedCandidate.slice(userInput.length);
+
+		for (let i = 0; i < updatedText.length; i++) {
+			const span = document.createElement("span");
+			span.id = `char${i}`;
+			span.textContent = updatedText[i];
+			span.style.color = i < userInput.length ? "gray" : "white";
+			textElem.appendChild(span);
+		}
+
+		// if(userInput[userInput.length - 1] === charText){
+		// 	charSpan.style.color = "gray"; // 正しく入力 → 灰色
+		// 	typingCount++;
+		// 	if(typingCount >= 15){ // 回復処理
+		// 		Player.HP += 15;
+		// 		if(Player.HP >= Player.MaxHP) Player.HP = Player.MaxHP;
+		// 		updatePlayerHPBar();
+		// 		showHealEffect(); // 回復エフェクト
+		// 		typingCount = 0;
+		// 	}
+		// } else {
+		// 	charSpan.style.color = "white"; // 初期状態 or 間違い → 白色
+		// 	userInput = userInput.slice(0, -1); // 正しくない文字を入力しているので削除する
+		// 	typingCount = 0;
+		// 	input.value = userInput; // 更新した入力内容を反映
+		// 	return;
+		// }
+
 		// すべて正しく入力されたら自動送信
-		if (userInput === correctWord) {
+		if (isInputExactlyAnyCandidate(userInput, originalRomajiCandidates)) {
+		// if (userInput === correctWord) {
 			timerRunning = false; // タイマー停止
 			input.disabled = true; // 入力停止
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
