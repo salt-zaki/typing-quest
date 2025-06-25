@@ -104,7 +104,7 @@ async function statusCheck(gameStatus){
 			await AbilityAttack();
 		}else {
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",200);
+			sessionStorage.setItem("inputTime",7);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		await findQuestions(level,stage).then(result => {
@@ -202,7 +202,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 100;
+				ans = 10;
 				x = 1;
 				break;
 			case 2:
@@ -273,22 +273,23 @@ let originalRomajiCandidates = []; // 複数ローマ字候補保持
 function showQuestion() {
 	let questionE = questionList[randomIndex].text;
 	let questionJ = questionList[randomIndex].translation;
+	let kana = questionList[randomIndex].kana;
 	console.log("問題文：" + questionList[randomIndex].text + "/" + questionList[randomIndex].translation);
 
 	// ここで複数ローマ字候補を生成
-	originalRomajiCandidates = generateAllRomajiCandidates(questionJ);
+	originalRomajiCandidates = generateAllRomajiCandidates(kana);
 
 	// UI表示は初期状態は questionE の一つ目を使う（画面表示用）
 	const displayRomaji = originalRomajiCandidates[0];
 
-  	const text = document.getElementById("text"); // タイピング文字
+  const text = document.getElementById("text"); // タイピング文字
 	const translation = document.getElementById("translation"); // 日本語
 	const input = document.getElementById("wordInput");
 
-  	// 表示リセット
-  	text.innerHTML = ""; //<span>を使用しているため要素ごと削除
-  	translation.textContent = questionJ; // 問題文を出力
-  	input.value = ""; // 入力欄をクリア
+	// 表示リセット
+	text.innerHTML = ""; //<span>を使用しているため要素ごと削除
+	translation.textContent = questionJ; // 問題文を出力
+	input.value = ""; // 入力欄をクリア
 	message.textContent = "正しく入力してください";
 
 	for (let i = 0; i < displayRomaji.length; i++) {
