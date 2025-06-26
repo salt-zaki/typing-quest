@@ -1,7 +1,7 @@
 let db;
 
 // メッセージ表示（タイピング風）
-const nextMsg = "さすがだな。伝説の勇者とその一族たちよ。<br>しかし不幸なことだ...<br>なまじ強いばかりに私の本当のすがたを<br>見ることになるとは...!!";
+const nextMsg = "お,おのれ...くちおし...。<br>だが、私を倒してももはや世界を救えまい！<br>わが、破壊の神よ...シドーよ!!<br>今ここに、いけにえをささぐ!!          ぐふっ!";
 
 // 常にEnter押下による送信をブロック
 const form = document.getElementById('typingForm');
@@ -16,8 +16,9 @@ this.value = this.value.replace(/[^\x20-\x7E]/g, ''); // 半角英数字と記�
 
 //　特殊攻撃
 function AbilityAttack(){
-	const KillMsg = "りゅうおうは力をためている。<br>りゅうおうのまわりに邪悪なオーラが集まっている!!<br>「…これで終わりだ!!」<br>りゅうおうは『終焉の業火』をはなった！";
+	const KillMsg = "シドーは呪文を唱えた<br>ルカナン<br>勇者は２ターン回復できなくなった。";
 	PopSet("たたかう"); // 共通処理
+	sessionStorage.setItem("typingCount", false);
 	let msg1Elem = document.getElementById('popup-message1');
 	msg1Elem.classList.remove('popup-message1-small');
 	msg1Elem.style.color = 'white';
@@ -91,20 +92,23 @@ function startTimerBar() {
 	requestAnimationFrame(updateBar);
 }
 
-let AbilityCount = 1; // 特殊攻撃カウント
+let AbilityCount = 3; // 特殊攻撃カウント
+let lockHeelCount; // シドー特別設定
 // ゲーム管理
 async function statusCheck(gameStatus){
 	if (gameStatus === "play"){
 		let level
 		if(sessionStorage.getItem("StageLevel") === "1") AbilityCount++;
-		if(AbilityCount % 3 === 0){
+		if(AbilityCount % 5 === 0){
+			lockHeelCount = AbilityCount + 3; // シドー特別設定
 			level = 6; // ダメージlevel6設定
 			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",3);
+			sessionStorage.setItem("inputTime",7);
 			await AbilityAttack();
 		}else {
+			if(AbilityCount === lockHeelCount) sessionStorage.setItem("typingCount", true); // シドー特別設定
 			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
 			sessionStorage.setItem("inputTime",7);
@@ -205,7 +209,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 10;
+				ans = 120;
 				x = 1;
 				break;
 			case 2:
@@ -225,8 +229,8 @@ function DamageLevel(level, hitDamage,DummyHP) {
 				x = 2.0;
 				break;
 			case 6:
-				ans = 30;
-				x = 2;
+				ans = 25;
+				x = 2.0;
 				break;
 			default:
 				ans = 5;
@@ -241,7 +245,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	return DummyHP;
 }
 
-// HP・status管理
+// HP・ダメージ管理・status管理
 function damageJudge(level, hitDamage) {
 	let DummyHP;
 	if(hitDamage === "player") {
@@ -255,6 +259,15 @@ function damageJudge(level, hitDamage) {
 		console.log("playerに" + (Player.HP-DummyHP) + "ダメージ");
 		Player.HP = DummyHP;
 		updatePlayerHPBar();
+		// シドー特殊設定
+		if(sessionStorage.getItem("StageLevel") === "1"){
+			let randomDrain = Math.floor(Math.random() * 3);
+			if(randomDrain === 0){
+				Enemy.HP += 25;
+				if(Enemy.HP >= Enemy.MaxHP) Enemy.HP = Enemy.MaxHP;
+				updateEnemyHPBar();
+			}
+		}
 	}else {
 		DummyHP = Number(DamageLevel(level, hitDamage,Enemy.HP));
 		const StageLevel = Number(sessionStorage.getItem("StageLevel")); // 文字列になるため型変換
@@ -324,6 +337,7 @@ async function initBattle() {
 	if(sessionStorage.getItem("firstUpdate") === "true") await updateAllQuestions(); // 全問題をtrue
 	db = window.db; // Firestore のグローバル接続を参照
 	let input = document.getElementById("wordInput"); // inputを定義
+	sessionStorage.setItem("typingCount", true); // シドー特別設定
 
 	// 初回問題集の取得
 	let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
@@ -359,15 +373,17 @@ async function initBattle() {
 			userInput = input.value;
 			typingCount = 0; // ミスったのでカウントリセット
 		} else {
-			typingCount++; // 正しい入力文字数カウント
+			if(sessionStorage.getItem("typingCount") === "true"){
+				typingCount++; // 正しい入力文字数カウント
 
-			// 回復処理
-			if (typingCount >= 15) {
-				Player.HP += 15;
-				if (Player.HP > Player.MaxHP) Player.HP = Player.MaxHP;
-				updatePlayerHPBar();
-				showHealEffect();
-				typingCount = 0;
+				// 回復処理
+				if (typingCount >= 15) {
+					Player.HP += 15;
+					if (Player.HP > Player.MaxHP) Player.HP = Player.MaxHP;
+					updatePlayerHPBar();
+					showHealEffect();
+					typingCount = 0;
+				}
 			}
 		}
 
