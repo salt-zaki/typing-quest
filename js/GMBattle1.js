@@ -76,6 +76,7 @@ function startTimerBar() {
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
+			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("NowDL"));
 			setTimeout(() => { // status判定
 				statusCheck(gameStatus);
 			}, 3000);
@@ -97,12 +98,14 @@ async function statusCheck(gameStatus){
 		let level
 		if(sessionStorage.getItem("StageLevel") === "1") AbilityCount++;
 		if(AbilityCount % 3 === 0){
-			level = 6; // ダメージlevel6
-			sessionStorage.setItem("DamageLevel","5");
+			level = 6; // ダメージlevel6設定
+			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
+			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
 			sessionStorage.setItem("inputTime",3);
 			await AbilityAttack();
 		}else {
+			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
 			sessionStorage.setItem("inputTime",7);
 		}
@@ -202,7 +205,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 10;
+				ans = 100;
 				x = 1;
 				break;
 			case 2:
@@ -249,6 +252,7 @@ function damageJudge(level, hitDamage) {
 		}else{
 			sessionStorage.setItem("gameStatus", "play");
 		}
+		console.log("playerに" + (Player.HP-DummyHP) + "ダメージ");
 		Player.HP = DummyHP;
 		updatePlayerHPBar();
 	}else {
@@ -262,32 +266,44 @@ function damageJudge(level, hitDamage) {
 		}else{
 			sessionStorage.setItem("gameStatus", "play");
 		}
+		console.log("enemyに" + (Enemy.HP-DummyHP) + "ダメージ");
 		Enemy.HP = DummyHP;
 		updateEnemyHPBar();
 	}
 }
 
+let romajiCandidatesList = []; // ローマ字候補を複数保持 susi,sushi..
+
 //問題の表示
 function showQuestion() {
-	let questionE = questionList[randomIndex].text;
 	let questionJ = questionList[randomIndex].translation;
+	let kana = questionList[randomIndex].kana;
 	console.log("問題文：" + questionList[randomIndex].text + "/" + questionList[randomIndex].translation);
+
+	// ここで複数ローマ字候補を生成 susi,sushi..
+	romajiCandidatesList = generateAllRomajiCandidates(kana);
+
+	// UI表示は初期状態は 最小文字数を表示（画面表示用）
+	const displayRomaji = romajiCandidatesList.reduce((shortest, current) =>
+		current.length < shortest.length ? current : shortest
+	);
 
   	const text = document.getElementById("text"); // タイピング文字
 	const translation = document.getElementById("translation"); // 日本語
 	const input = document.getElementById("wordInput");
 
-  	// 表示リセット
-  	text.innerHTML = ""; //<span>を使用しているため要素ごと削除
-  	translation.textContent = questionJ; // 問題文を出力
-  	input.value = ""; // 入力欄をクリア
+	// 表示リセット
+	text.innerHTML = ""; //<span>を使用しているため要素ごと削除
+	translation.textContent = questionJ; // 問題文を出力
+	input.value = ""; // 入力欄をクリア
 	message.textContent = "正しく入力してください";
 
-	// <span> で分解して1文字ずつ表示
-	for (let i = 0; i < questionE.length; i++) {
+	// 文字列を<span> で分解して1文字ずつ表示
+	for (let i = 0; i < displayRomaji.length; i++) {
 		const span = document.createElement("span");
 		span.id = `char${i}`; // spanのidを一文字づつ設定
-		span.textContent = questionE[i];
+		span.textContent = displayRomaji[i];
+		span.style.color = "white";
 		text.appendChild(span);
 	}
 
@@ -312,6 +328,7 @@ async function initBattle() {
 	// 初回問題集の取得
 	let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
 	let stage = Number(sessionStorage.getItem("stageNo"));
+	sessionStorage.setItem("NowDL",sessionStorage.getItem("DamageLevel"));
 	findQuestions(level,stage).then(result => { // level1の問題を取得
 		questionList = result;
 		let max = questionList.length;
@@ -328,34 +345,53 @@ async function initBattle() {
 	// inputはDOMContentLoaded内で定義すればnullにならない
 	// スペルを一文字ごとに確認し色付けする
 	input.addEventListener("input", () => {  // 定義したinput.入力するたびに処理実行
-		let correctWord = document.getElementById("text").textContent; // タイピング文字
 		input.focus(); // 要素inputにフォーカスを設定
 		let userInput = input.value; // 入力するたびに最新値
 		console.log("入力文字：" + userInput); // 入力文字
 
 		const charSpan = document.getElementById(`char${userInput.length - 1}`); // <span>内の要素を取得
-		const charText = document.getElementById(`char${userInput.length - 1}`).innerText; // <span>内のテキストを取得
 		console.log("一致文字：" + charSpan);
 
-		if(userInput[userInput.length - 1] === charText){
-			charSpan.style.color = "gray"; // 正しく入力 → 灰色
-			typingCount++;
-			if(typingCount >= 15){ // 回復処理
+		// 候補のうち、userInputをprefixとして満たすものだけに絞る
+		if (!isInputPrefixOfAnyCandidate(userInput, romajiCandidatesList)) { // 候補文字と入力されている文字を比較
+			// 不正入力：最後の1文字を削除
+			input.value = userInput.slice(0, -1);
+			userInput = input.value;
+			typingCount = 0; // ミスったのでカウントリセット
+		} else {
+			typingCount++; // 正しい入力文字数カウント
+
+			// 回復処理
+			if (typingCount >= 15) {
 				Player.HP += 15;
-				if(Player.HP >= Player.MaxHP) Player.HP = Player.MaxHP;
+				if (Player.HP > Player.MaxHP) Player.HP = Player.MaxHP;
 				updatePlayerHPBar();
-				showHealEffect(); // 回復エフェクト
+				showHealEffect();
 				typingCount = 0;
 			}
-		} else {
-			charSpan.style.color = "white"; // 初期状態 or 間違い → 白色
-			userInput = userInput.slice(0, -1); // 正しくない文字を入力しているので削除する
-			typingCount = 0;
-			input.value = userInput; // 更新した入力内容を反映
-			return;
 		}
+
+		// 表示の更新（画面上に最も近い候補を表示して色分け）
+		let matchedCandidate = romajiCandidatesList.find(c => c.startsWith(userInput));
+		if (!matchedCandidate) { // 上記見つからなかった場合の保険
+			matchedCandidate = romajiCandidatesList.reduce((shortest, current) =>
+				current.length < shortest.length ? current : shortest
+			);
+		}
+
+		const textElem = document.getElementById("text");
+		textElem.innerHTML = "";
+		// matchedCandidateの先頭からuserInputの文字数だけグレーに設定し再表示
+		for (let i = 0; i < matchedCandidate.length; i++) {
+			const span = document.createElement("span");
+			span.id = `char${i}`;
+			span.textContent = matchedCandidate[i];
+			span.style.color = i < userInput.length ? "gray" : "white";
+			textElem.appendChild(span);
+		}
+
 		// すべて正しく入力されたら自動送信
-		if (userInput === correctWord) {
+		if (isInputExactlyAnyCandidate(userInput, romajiCandidatesList)) { // ローマ字候補と一致判定
 			timerRunning = false; // タイマー停止
 			input.disabled = true; // 入力停止
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));

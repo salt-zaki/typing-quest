@@ -63,12 +63,13 @@ function nextBossStatus(){
 // nextステージ設定
 function nextGameStatus() {
 	nextBossStatus();
-	// const Estatus = new Status("しんりゅうおう", 200, 200, "enemyImg1-2.jpg");
-	const Pstatus = new Status(Player.Name, 120, 120, "playerImg1-1.jpg");
-	// sessionStorage.setItem("Estatus", JSON.stringify(Estatus));
+	let playerHP = Player.HP+50
+	if(playerHP >= 120) playerHP = 120;
+	const Pstatus = new Status(Player.Name, playerHP, 120, "playerImg1-1.jpg");
 	sessionStorage.setItem("Pstatus", JSON.stringify(Pstatus));
 	sessionStorage.setItem("gameStatus","play");
 	sessionStorage.setItem("StageLevel",1);
+	sessionStorage.setItem("DamageLevel",1);
 }
 
 // POPUP関連 //
@@ -249,6 +250,7 @@ const ROMAJI_DICT = {
 	// 記号・句読点・補助文字
 	"ー": ["-"],
 	"!": ["!"],
+	"！": ["!"],
 	"?": ["?"],
 	"？": ["?"],
 	",": [","],
@@ -265,30 +267,54 @@ const ROMAJI_DICT = {
 };
 
 // DOM要素
-const translation = questionList[randomIndex].kana;
+// const translation = questionList[randomIndex].kana;
 const text = document.getElementById("text");
 const romajiDisplay = document.getElementById("romajiDisplay");
 const input = document.getElementById("wordInput");
 
 // ひらがな1文字からローマ字候補を取得する（ROMAJI_DICTは別途用意）
 function getRomajiCandidates(kanaChar) {
-  return ROMAJI_DICT[kanaChar] || [kanaChar]; // なければそのまま返す
+  return ROMAJI_DICT[kanaChar] || kanaChar; // なければそのまま返す
 }
 
 // ひらがな文字列から全ローマ字候補パターンを生成する（全組み合わせ）
-function generateAllRomajiCandidates(kanaStr) {
-	const kanaChars = kanaStr.split("");
-	let results = [""];
+function generateAllRomajiCandidates(kanaStr) { // kanaStr：表示文字のひらがな
+	let results = [""]; // リストとして返す
+	const kanaChars = kanaStr.split(""); // kanaStr = "しゃしん" → kanaChars = ["し", "ゃ", "し", "ん"]
+	const n = kanaChars.length; // 文字数
 
-	for (const kana of kanaChars) {
-		const candidates = getRomajiCandidates(kana);
-		let temp = [];
+	for(let i = 0; i < n;){
+		let candidates = [];
+		let step = 1; // 文字列の位置の加算値（しゃ、ぎゃ...などの場合は+2加算する）
+		const twoChars = kanaChars[i] + (kanaChars[i + 1] || ""); // 2文字を作成 しゃ,ゃし...
+
+		// 2文字一致（例: "しゃ", "きょ", "ちゃ"）
+		if (ROMAJI_DICT[twoChars]) {
+			candidates = getRomajiCandidates(twoChars);
+			step = 2; // 2文字一致したので文字位置も2動く
+
+		// [っ]の処理
+		}else if (kanaChars[i] === "っ") {
+			const nextRomajis = getRomajiCandidates(kanaChars[i + 1]); // nextRomajis:っ の次の文字（っく⇒[ku,cu]）
+			const consonants = nextRomajis.map(r => r[0]).filter(Boolean); // 各ローマ字の先頭文字を取得（例: "k", "c"）し、.filter(Boolean)：空文字やundefinedなどを除外
+			candidates = consonants;
+			step = 1;
+
+		// 通常1文字処理
+    	}else {
+			candidates = getRomajiCandidates(kanaChars[i]);
+			step = 1;
+    	}
+
+		// 結合処理
+		const temp = [];
 		for (const prefix of results) {
 			for (const c of candidates) {
 			temp.push(prefix + c);
 			}
 		}
 		results = temp;
+		i += step;
 	}
 	return results;
 }
@@ -296,7 +322,7 @@ function generateAllRomajiCandidates(kanaStr) {
 // 入力値が複数ローマ字候補のいずれかのprefixになっているか判定する
 function isInputPrefixOfAnyCandidate(input, candidates) {
 	for (const candidate of candidates) {
-		if (candidate.startsWith(input)) return true;
+		if (candidate.startsWith(input)) return true; // candidate = "shita"、input = "shi" ⇒true
 	}
 	return false;
 }
