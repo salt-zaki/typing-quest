@@ -156,10 +156,10 @@ function getName() {
 // 共通エフェクト
 // ダメージエフェクト
 function PlayerDamage() { // プレイヤーがダメージを受けた場合
-    DamageEffect(document.getElementById("playerImg"));
+  DamageEffect(document.getElementById("playerImg"));
 }
 function EnemyDamage() { // 敵がダメージを受けた場合
-    DamageEffect(document.getElementById("enemyImg"));
+  DamageEffect(document.getElementById("enemyImg"));
 }
 // ダメージを受けた場合に画像を点滅させる関数
 function DamageEffect(img) {
@@ -170,6 +170,23 @@ function DamageEffect(img) {
 	setTimeout(() => {
 	  img.classList.remove('hit');
 	}, 2000); // 2000ms（2秒）後に点滅を停止
+}
+
+function PlayerDamage2() { // プレイヤーがダメージを受けた場合
+  DamageEffect2(document.getElementById("playerImg"));
+}
+function EnemyDamage2() { // 敵がダメージを受けた場合
+  DamageEffect2(document.getElementById("enemyImg"));
+}
+// ダメージを受けた場合に画像を点滅させる関数
+function DamageEffect2(img) {
+	// 点滅クラスを追加
+	img.classList.add('hit');
+	
+	// 点滅を実行
+	setTimeout(() => {
+	  img.classList.remove('hit');
+	}, 750); // 2000ms（2秒）後に点滅を停止
 }
 
 // 回復エフェクト

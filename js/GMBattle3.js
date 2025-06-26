@@ -1,7 +1,7 @@
 let db;
 
 // メッセージ表示（タイピング風）
-const nextMsg = "さすがだな。伝説の勇者とその一族たちよ。<br>しかし不幸なことだ...<br>なまじ強いばかりに私の本当のすがたを<br>見ることになるとは...!!";
+const nextMsg = "ぐはあああ……！何ものだお前たちは？<br>うぐおおお……！私には何も思い出せぬ……<br>しかし何をやるべきかはわかっている。<br>お前たち人間どもを根絶やしにしてくれるわっ！";
 
 // 常にEnter押下による送信をブロック
 const form = document.getElementById('typingForm');
@@ -16,7 +16,7 @@ this.value = this.value.replace(/[^\x20-\x7E]/g, ''); // 半角英数字と記�
 
 //　特殊攻撃
 function AbilityAttack(){
-	const KillMsg = "りゅうおうは力をためている。<br>りゅうおうのまわりに邪悪なオーラが集まっている!!<br>「…これで終わりだ!!」<br>りゅうおうは『終焉の業火』をはなった！";
+	const KillMsg = "";
 	PopSet("たたかう"); // 共通処理
 	let msg1Elem = document.getElementById('popup-message1');
 	msg1Elem.classList.remove('popup-message1-small');
@@ -95,7 +95,8 @@ let AbilityCount = 1; // 特殊攻撃カウント
 // ゲーム管理
 async function statusCheck(gameStatus){
 	if (gameStatus === "play"){
-		let level
+		let level;
+		let c;
 		if(sessionStorage.getItem("StageLevel") === "1") AbilityCount++;
 		if(AbilityCount % 3 === 0){
 			level = 6; // ダメージlevel6設定
@@ -110,14 +111,15 @@ async function statusCheck(gameStatus){
 			sessionStorage.setItem("inputTime",7);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
-		await findQuestions(level,stage).then(result => {
-			questionList = result;
-			let max = questionList.length;
-			randomIndex = Math.floor(Math.random() * max);
-			updateQuestions(questionList[randomIndex].question,level,stage); // false更新。noとlevelを引数に渡す
-			showQuestion(); // 問題表示
-			startTimerBar(); // タイマー開始
-		},3000);
+
+			await findQuestions(level,stage).then(result => {
+				questionList = result;
+				let max = questionList.length;
+				randomIndex = Math.floor(Math.random() * max);
+				updateQuestions(questionList[randomIndex].question,level,stage); // false更新。noとlevelを引数に渡す
+				showQuestion(); // 問題表示
+				startTimerBar(); // タイマー開始
+			},3000);
 	}else if (gameStatus === "next"){
 		PopSet("すすむ"); // 共通処理
 		let msg1Elem = document.getElementById('popup-message1');
@@ -205,7 +207,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 100;
+				ans = 10;
 				x = 1;
 				break;
 			case 2:
@@ -241,7 +243,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	return DummyHP;
 }
 
-// HP・status管理
+// HP・ダメージ・status管理
 function damageJudge(level, hitDamage) {
 	let DummyHP;
 	if(hitDamage === "player") {
@@ -313,6 +315,7 @@ function showQuestion() {
 	input.focus(); // 要素inputにフォーカスを設定
 }
 
+sessionStorage.setItem("typingDamage", 5);
 let typingCount; // タイピングカウント
 // メイン //
 // // 初期化関数を実行して読み込み時に開始。jsファイルを変数にしたため読込時の発火が使用できなくなったので初期化してる
@@ -358,6 +361,18 @@ async function initBattle() {
 			input.value = userInput.slice(0, -1);
 			userInput = input.value;
 			typingCount = 0; // ミスったのでカウントリセット
+			// エスターク特殊設定
+			Player.HP -= Number(sessionStorage.getItem("typingDamage"));
+			updatePlayerHPBar();
+			PlayerDamage2();
+			typingCount = 0;
+			if(Player.HP <= 0){
+				sessionStorage.setItem("gameStatus", "end");
+				sessionStorage.setItem("winner", "enemy");
+				setTimeout(() => { // status判定
+					statusCheck("end");
+				}, 3000);
+			}
 		} else {
 			typingCount++; // 正しい入力文字数カウント
 

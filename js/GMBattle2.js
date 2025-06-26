@@ -209,7 +209,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 120;
+				ans = 10;
 				x = 1;
 				break;
 			case 2:
@@ -229,7 +229,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 				x = 2.0;
 				break;
 			case 6:
-				ans = 25;
+				ans = 20;
 				x = 2.0;
 				break;
 			default:
