@@ -42,7 +42,7 @@
       <!-- autocomplete="off" 入力履歴非表示。formとinputに設定 -->
       <form id="typingForm" action="/exercise/GMServlet" method="post" autocomplete="off">
         <input type="text" name="word" id="wordInput" placeholder="単語を入力してください"
-          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="latin">
         <input type="hidden" id="stageChange"name= "action" value="battle">
         <input type="hidden" id="damageLevel" name= "Level" value="1">
         <input type="hidden" id="damageFlag" name= "damage" value="enemy">

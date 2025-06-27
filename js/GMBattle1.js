@@ -76,7 +76,6 @@ function startTimerBar() {
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
-			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("NowDL"));
 			setTimeout(() => { // status判定
 				statusCheck(gameStatus);
 			}, 3000);
@@ -99,15 +98,13 @@ async function statusCheck(gameStatus){
 		if(sessionStorage.getItem("StageLevel") === "1") AbilityCount++;
 		if(AbilityCount % 3 === 0){
 			level = 6; // ダメージlevel6設定
-			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
 			sessionStorage.setItem("inputTime",3);
 			await AbilityAttack();
 		}else {
-			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",7);
+			sessionStorage.setItem("inputTime",8);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		await findQuestions(level,stage).then(result => {
@@ -328,7 +325,6 @@ async function initBattle() {
 	// 初回問題集の取得
 	let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
 	let stage = Number(sessionStorage.getItem("stageNo"));
-	sessionStorage.setItem("NowDL",sessionStorage.getItem("DamageLevel"));
 	findQuestions(level,stage).then(result => { // level1の問題を取得
 		questionList = result;
 		let max = questionList.length;

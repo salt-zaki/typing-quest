@@ -148,12 +148,12 @@ async function statusCheck(gameStatus){
 			setConsecutiveAttack();
 			ConsecutiveAttack = Number(sessionStorage.getItem("ConsecutiveAttack")); // ループ回数
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",3);
+			sessionStorage.setItem("inputTime",3.5);
 			await AbilityAttack();
 		}else {
 			ConsecutiveAttack = 1; // 通常時
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",7);
+			sessionStorage.setItem("inputTime",8);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		if(ConsecutiveAttack === 1){
@@ -400,6 +400,7 @@ function matchTyping() {  // 定義したinput.入力するたびに処理実行
 		PlayerDamage2();
 		typingCount = 0;
 		if(Player.HP <= 0){
+			input.disabled = true; // 入力停止
 			sessionStorage.setItem("gameStatus", "end");
 			sessionStorage.setItem("winner", "enemy");
 			setTimeout(() => { // status判定

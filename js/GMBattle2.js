@@ -105,13 +105,13 @@ async function statusCheck(gameStatus){
 			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",7);
+			sessionStorage.setItem("inputTime",8);
 			await AbilityAttack();
 		}else {
 			if(AbilityCount === lockHeelCount) sessionStorage.setItem("typingCount", true); // シドー特別設定
 			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",7);
+			sessionStorage.setItem("inputTime",8);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		await findQuestions(level,stage).then(result => {
@@ -209,11 +209,11 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 210;
+				ans = 10;
 				x = 1;
 				break;
 			case 2:
-				ans = 210;
+				ans = 10;
 				x = 1.5;
 				break;
 			case 3:
