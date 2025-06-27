@@ -176,6 +176,7 @@ function updatePlayerHPBar() { // player
 	if (playerHPPercentage <= 0) pHPBar.style.backgroundColor = "#444";
 	else if (playerHPPercentage <= Player.MaxHP * 0.3) pHPBar.style.backgroundColor = "red";
 	else if (playerHPPercentage <= Player.MaxHP * 0.6) pHPBar.style.backgroundColor = "orange";
+	else pHPBar.style.backgroundColor = "#4caf50";
 	playerHPBar.style.width = (Player.MaxHP * unitWidthPerHP) + "px";
 	pHPBar.style.width = (playerHPPercentage / Player.MaxHP * 100) + "%"; 	// ゲージ内の進捗（HP%）
 }

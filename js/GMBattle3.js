@@ -148,12 +148,13 @@ async function statusCheck(gameStatus){
 			setConsecutiveAttack();
 			ConsecutiveAttack = Number(sessionStorage.getItem("ConsecutiveAttack")); // ループ回数
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",3.5);
+			sessionStorage.setItem("inputTime",3);
 			await AbilityAttack();
 		}else {
 			ConsecutiveAttack = 1; // 通常時
+			sessionStorage.setItem("ConsecutiveAttack", 1); // 
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",8);
+			sessionStorage.setItem("inputTime",17);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		if(ConsecutiveAttack === 1){
@@ -233,6 +234,7 @@ function updatePlayerHPBar() { // player
 	if (playerHPPercentage <= 0) pHPBar.style.backgroundColor = "#444";
 	else if (playerHPPercentage <= Player.MaxHP * 0.3) pHPBar.style.backgroundColor = "red";
 	else if (playerHPPercentage <= Player.MaxHP * 0.6) pHPBar.style.backgroundColor = "orange";
+	else pHPBar.style.backgroundColor = "#4caf50";
 	playerHPBar.style.width = (Player.MaxHP * unitWidthPerHP) + "px";
 	pHPBar.style.width = (playerHPPercentage / Player.MaxHP * 100) + "%"; 	// ゲージ内の進捗（HP%）
 }
