@@ -135,7 +135,7 @@ function closePopup() {
 			window._popupCallback = null;
 		}
 	}else if(gameStatus === "end"){
-		NextPage('GameTitle.html', 0);
+		NextPage('GameSet.html', 0);
 	}else{}
 }
 
@@ -240,7 +240,7 @@ const ROMAJI_DICT = {
 	"だ": ["da"], "ぢ": ["di"], "づ": ["du"], "で": ["de"], "ど": ["do"],
 	"ば": ["ba"], "び": ["bi"], "ぶ": ["bu"], "べ": ["be"], "ぼ": ["bo"],
 	"ぱ": ["pa"], "ぴ": ["pi"], "ぷ": ["pu"], "ぺ": ["pe"], "ぽ": ["po"],
-	"ぁ": ["xa", "la", "a"], "ぃ": ["xi", "li", "i"], "ぅ": ["xu", "lu", "u"], "ぇ": ["xe", "le", "e"], "ぉ": ["xo", "lo", "o"],
+	"ぁ": ["xa", "la"], "ぃ": ["xi", "li"], "ぅ": ["xu", "lu"], "ぇ": ["xe", "le"], "ぉ": ["xo", "lo"],
 	"ゃ": ["xya", "lya"], "ゅ": ["xyu", "lyu"], "ょ": ["xyo", "lyo"], "ゎ": ["xwa", "lwa"],
 
 	// 拗音（2文字）
