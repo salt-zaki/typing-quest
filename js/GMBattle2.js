@@ -72,7 +72,7 @@ function startTimerBar() {
 			timerRunning = false;	 // タイマー無効
 			input.disabled = true; // 要素削除：input無効
 
-			message.textContent = "魔王から攻撃を受けた";
+			message.textContent = Enemy.Name +"から攻撃を受けた";
 	  		PlayerDamage(); // プレイヤーがダメージを受けた場合に点滅
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
@@ -154,7 +154,7 @@ async function statusCheck(gameStatus){
 			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
 		}else{
-			updateUserInfo(Player.Name,2); // クリアstageを更新
+			updateUserInfo(Player.Name,3); // クリアstageを更新
 			msg1Elem.style.color = 'rgb(255,255,128)';
 			showPopup("CONGRATULATIONS", Player.Name + "の勝利です。");
 		}
@@ -209,11 +209,11 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 10;
+				ans = 210;
 				x = 1;
 				break;
 			case 2:
-				ans = 10;
+				ans = 210;
 				x = 1.5;
 				break;
 			case 3:

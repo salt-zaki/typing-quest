@@ -14,8 +14,8 @@ async function updateAllQuestions() {
     	const updatePromises = [];
 
     	querySnapshot.forEach((docSnap) => {
-		const docRef = db.collection("typing_questions").doc(docSnap.id);
-		updatePromises.push(docRef.update({ showText: "true" }));
+			const docRef = db.collection("typing_questions").doc(docSnap.id);
+			updatePromises.push(docRef.update({ showText: "true" }));
     	});
 
     	await Promise.all(updatePromises);
@@ -30,20 +30,52 @@ async function updateAllQuestions() {
 async function findQuestions(level,stage) {
 	db = window.db;
 	try {
-    	const querySnapshot = await db
-		.collection("typing_questions")
-		.where("difficulty", "==", level)
-		.where("showText", "==", "true")
-		.where("stage", "==", stage)
-		.get();
+		const queryRef = db
+			.collection("typing_questions")
+			.where("difficulty", "==", level)
+			.where("showText", "==", "true")
+			.where("stage", "==", stage);
 
-    	const results = [];
-    	querySnapshot.forEach((docSnap) => {
-		results.push(docSnap.data());
-    	});
+		let querySnapshot = await queryRef.get();
+		const results = [];
 
-    	console.log(`${results.length} 件取得（level=${level}, showText=true）`);
-    	return results;
+		querySnapshot.forEach((docSnap) => {
+			results.push(docSnap.data());
+		});
+
+		// 0件だった場合の処理
+		if (results.length === 0) {
+			console.log("取得0件のため showText=true を更新します");
+
+			// level,stage別のデータ取得（showTextをtrueにしたいデータを取得）
+			const updateSnapshot = await db
+				.collection("typing_questions")
+				.where("difficulty", "==", level)
+				.where("stage", "==", stage)
+				.get();
+
+			const updatePromises = [];
+
+			// データ更新
+			updateSnapshot.forEach((docSnap) => {
+				const docRef = db.collection("typing_questions").doc(docSnap.id);
+				updatePromises.push(docRef.update({ showText: "true" }));
+			});
+
+			await Promise.all(updatePromises);
+
+			// 再取得
+			querySnapshot = await queryRef.get();
+			results = [];
+			querySnapshot.forEach((docSnap) => { // 各ドキュメントのデータ配列をresultに追加
+				results.push(docSnap.data()); // docSnap.data()は各ドキュメントの中身
+			});
+
+			console.log(`${results.length} 件再取得（level=${level}）`);
+		} else {
+			console.log(`${results.length} 件取得（level=${level}）`);
+		}
+		return results;
 	} catch (err) {
     	console.error("findQuestions エラー:", err);
     	return [];

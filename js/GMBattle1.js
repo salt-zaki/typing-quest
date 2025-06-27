@@ -71,7 +71,7 @@ function startTimerBar() {
 			timerRunning = false;	 // タイマー無効
 			input.disabled = true; // 要素削除：input無効
 
-			message.textContent = "魔王から攻撃を受けた";
+			message.textContent = Enemy.Name + "から攻撃を受けた";
 	  		PlayerDamage(); // プレイヤーがダメージを受けた場合に点滅
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
@@ -241,7 +241,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	return DummyHP;
 }
 
-// HP・status管理
+// HP・ダメージ・status管理
 function damageJudge(level, hitDamage) {
 	let DummyHP;
 	if(hitDamage === "player") {

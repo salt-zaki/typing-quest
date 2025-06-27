@@ -171,7 +171,7 @@ function DamageEffect(img) {
 	  img.classList.remove('hit');
 	}, 2000); // 2000ms（2秒）後に点滅を停止
 }
-
+// ダメージエフェクト2
 function PlayerDamage2() { // プレイヤーがダメージを受けた場合
   DamageEffect2(document.getElementById("playerImg"));
 }
