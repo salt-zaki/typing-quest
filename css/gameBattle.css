@@ -11,6 +11,9 @@ body {
   background-color: #111;
   font-family: sans-serif;
   text-align: center;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .battle-screen {
@@ -64,7 +67,8 @@ body {
 	align-items: flex-start;          /* 縦方向の上側で揃える */
 	position: absolute;             /* 絶対位置指定 */
 	top: 5vh;             /* 画面の上から20%の位置に配置 */
-	right: 0vw;                       /* 画面右端に配置 */
+	right: 10vw;                       /* 画面右端に配置 */
+  justify-content: flex-end; /* 右端開始地点 */
 }
 
 .enemyStatus {
@@ -86,7 +90,8 @@ body {
 	align-items: flex-end; /* 縦方向の下側で揃える */
 	position: absolute; /* 絶対位置指定 */
 	bottom: 5vh;
-	left: 0vw; /* 画面右端に配置 */
+	left: 10vw; /* 画面右端に配置 */
+  justify-content: flex-start;
 }
 
 .playerStatus {

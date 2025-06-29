@@ -76,6 +76,7 @@ function startTimerBar() {
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
+			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL")); // DanegeLevelを戻す
 			setTimeout(() => { // status判定
 				statusCheck(gameStatus);
 			}, 3000);
@@ -98,6 +99,7 @@ async function statusCheck(gameStatus){
 		if(sessionStorage.getItem("StageLevel") === "1") AbilityCount++;
 		if(AbilityCount % 3 === 0){
 			level = 6; // ダメージlevel6設定
+			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
 			sessionStorage.setItem("inputTime",3);
@@ -122,8 +124,8 @@ async function statusCheck(gameStatus){
 		msg1Elem.style.color = 'white';
 
 		// popup-message2を削除
-		let msg2Elem = document.getElementById("popup-message2"); // 1. 要素を削除する前に保存
-		let savedElement = msg2Elem;  // 削除前に保存
+		let msg2Elem = document.getElementById("popup-message2"); // 1. 要素を格納
+		let savedElement = msg2Elem.outerHTML; // ← これ重要。 削除前に保存
 		msg2Elem.remove(); // 2. 要素を削除
 
 		setTimeout(() => {
@@ -133,7 +135,7 @@ async function statusCheck(gameStatus){
 					document.getElementById("endButton").style.visibility = "visible";
 					document.getElementById("Button-message").style.visibility = "visible";
 					document.getElementById('endButton').focus();
-					document.body.appendChild(savedElement);  // 要素を復元（再追加）
+					// document.body.appendChild(savedElement);  // 要素を復元（再追加）
 				});
 			}, 500);
 		}, 1000);
@@ -143,6 +145,17 @@ async function statusCheck(gameStatus){
 		msg1Elem.classList.remove('popup-message1-small'); // 旧クラス名を削除
 		msg1Elem.classList.add('popup-message1-large'); // 新しいクラス名を設定
 		const winner = sessionStorage.getItem("winner");
+
+		// popup-message2 を確実に再作成・挿入（重複防止）
+		if (document.getElementById("popup-message2") !== null) {
+			const msg2 = document.createElement("p");
+			msg2.id = "popup-message2";
+			msg2.classList.add("popup-message2");
+
+			const popupContent = document.querySelector(".popup-content");
+			const endBtn = document.getElementById("endButton");
+			popupContent.insertBefore(msg2, endBtn); // endButtonの前に追加
+		}
 		if(winner === "enemy"){
 			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
@@ -203,11 +216,11 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 210;
+				ans = 10;
 				x = 1;
 				break;
 			case 2:
-				ans = 210;
+				ans = 10;
 				x = 1.5;
 				break;
 			case 3:

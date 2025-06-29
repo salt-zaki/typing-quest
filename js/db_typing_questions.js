@@ -15,7 +15,7 @@ async function updateAllQuestions() {
 
     	querySnapshot.forEach((docSnap) => {
 			const docRef = db.collection("typing_questions").doc(docSnap.id);
-			updatePromises.push(docRef.update({ showText: "true" }));
+			updatePromises.push(docRef.update({ showText: true }));
     	});
 
     	await Promise.all(updatePromises);
@@ -26,14 +26,14 @@ async function updateAllQuestions() {
 	}
 }
 
-// showText = "true" かつdifficulty一致のデータを取得
+// showText = true かつdifficulty一致のデータを取得
 async function findQuestions(level,stage) {
 	db = window.db;
 	try {
 		const queryRef = db
 			.collection("typing_questions")
 			.where("difficulty", "==", level)
-			.where("showText", "==", "true")
+			.where("showText", "==", true)
 			.where("stage", "==", stage);
 
 		let querySnapshot = await queryRef.get();
@@ -59,7 +59,7 @@ async function findQuestions(level,stage) {
 			// データ更新
 			updateSnapshot.forEach((docSnap) => {
 				const docRef = db.collection("typing_questions").doc(docSnap.id);
-				updatePromises.push(docRef.update({ showText: "true" }));
+				updatePromises.push(docRef.update({ showText: true }));
 			});
 
 			await Promise.all(updatePromises);

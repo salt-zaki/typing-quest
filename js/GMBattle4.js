@@ -71,12 +71,12 @@ function startTimerBar() {
 			timerRunning = false;	 // タイマー無効
 			input.disabled = true; // 要素削除：input無効
 
-			message.textContent = "魔王から攻撃を受けた";
+			message.textContent =  Enemy.Name + "から攻撃を受けた";
 	  		PlayerDamage(); // プレイヤーがダメージを受けた場合に点滅
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
-			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("NowDL"));
+			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL")); // DanegeLevelを戻す
 			setTimeout(() => { // status判定
 				statusCheck(gameStatus);
 			}, 3000);
@@ -97,17 +97,16 @@ async function statusCheck(gameStatus){
 	if (gameStatus === "play"){
 		let level
 		if(sessionStorage.getItem("StageLevel") === "1") AbilityCount++;
-		if(AbilityCount % 3 === 0){
-			level = 6; // ダメージlevel6設定
-			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
+		if(AbilityCount % 4 === 0){
+			level = 5; // ダメージlevel6設定
+			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",3);
+			sessionStorage.setItem("inputTime",10);
 			await AbilityAttack();
 		}else {
-			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",7);
+			sessionStorage.setItem("inputTime",70);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		await findQuestions(level,stage).then(result => {
@@ -146,11 +145,22 @@ async function statusCheck(gameStatus){
 		msg1Elem.classList.remove('popup-message1-small'); // 旧クラス名を削除
 		msg1Elem.classList.add('popup-message1-large'); // 新しいクラス名を設定
 		const winner = sessionStorage.getItem("winner");
+
+		// popup-message2 を確実に再作成・挿入（重複防止）
+		if (document.getElementById("popup-message2") !== null) {
+			const msg2 = document.createElement("p");
+			msg2.id = "popup-message2";
+			msg2.classList.add("popup-message2");
+
+			const popupContent = document.querySelector(".popup-content");
+			const endBtn = document.getElementById("endButton");
+			popupContent.insertBefore(msg2, endBtn); // endButtonの前に追加
+		}
 		if(winner === "enemy"){
 			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
 		}else{
-			updateUserInfo(Player.Name,2); // クリアstageを更新
+			updateUserInfo(Player.Name,5); // クリアstageを更新
 			msg1Elem.style.color = 'rgb(255,255,128)';
 			showPopup("CONGRATULATIONS", Player.Name + "の勝利です。");
 		}
@@ -172,6 +182,7 @@ function updatePlayerHPBar() { // player
 	if (playerHPPercentage <= 0) pHPBar.style.backgroundColor = "#444";
 	else if (playerHPPercentage <= Player.MaxHP * 0.3) pHPBar.style.backgroundColor = "red";
 	else if (playerHPPercentage <= Player.MaxHP * 0.6) pHPBar.style.backgroundColor = "orange";
+	else pHPBar.style.backgroundColor = "#4caf50";
 	playerHPBar.style.width = (Player.MaxHP * unitWidthPerHP) + "px";
 	pHPBar.style.width = (playerHPPercentage / Player.MaxHP * 100) + "%"; 	// ゲージ内の進捗（HP%）
 }
@@ -205,28 +216,32 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 100;
+				ans = 15;
 				x = 1;
 				break;
 			case 2:
-				ans = 10;
-				x = 1.5;
+				ans = 20;
+				x = 1;
 				break;
 			case 3:
 				ans = 20;
-				x = 1.0;
+				x = 1.5;
 				break;
 			case 4:
 				ans = 20;
-				x = 1.5;
+				x = 2;
 				break;
 			case 5:
 				ans = 20;
-				x = 2.0;
+				x = 2;
 				break;
 			case 6:
-				ans = 30;
-				x = 2;
+				if (AbilityTypingCount === displayRomajiLngth) ans = 0;
+				else if (AbilityTypingCount >= displayRomajiLngth * 0.8) ans = 20;
+				else if (AbilityTypingCount >= displayRomajiLngth * 0.6) ans = 40;
+				else if (AbilityTypingCount >= displayRomajiLngth * 0.4) ans = 50;
+				else ans = 60;
+				x = 1;
 				break;
 			default:
 				ans = 5;
@@ -234,9 +249,10 @@ function DamageLevel(level, hitDamage,DummyHP) {
 				break;
 		}
 	if(hitDamage === "player") {
-		DummyHP = DummyHP-ans*x;
+		DummyHP = DummyHP-ans*x; // playerが受けるダメージ
 	}else {
-		DummyHP = DummyHP-ans;
+		if (level === 6) ans = 0;
+		DummyHP = DummyHP-ans; // enemyが受けるダメージ
 	}
 	return DummyHP;
 }
@@ -288,7 +304,7 @@ function showQuestion() {
 		current.length < shortest.length ? current : shortest
 	);
 
-  	const text = document.getElementById("text"); // タイピング文字
+  const text = document.getElementById("text"); // タイピング文字
 	const translation = document.getElementById("translation"); // 日本語
 	const input = document.getElementById("wordInput");
 
@@ -306,6 +322,7 @@ function showQuestion() {
 		span.style.color = "white";
 		text.appendChild(span);
 	}
+	displayRomajiLngth = displayRomaji.length;
 
 	text.style.visibility = "visible";
 	translation.style.visibility = "visible";
@@ -314,6 +331,8 @@ function showQuestion() {
 }
 
 let typingCount; // タイピングカウント
+let AbilityTypingCount; // 特殊設定カウント
+let displayRomajiLngth;
 // メイン //
 // // 初期化関数を実行して読み込み時に開始。jsファイルを変数にしたため読込時の発火が使用できなくなったので初期化してる
 async function initBattle() {
@@ -360,9 +379,10 @@ async function initBattle() {
 			typingCount = 0; // ミスったのでカウントリセット
 		} else {
 			typingCount++; // 正しい入力文字数カウント
+			AbilityTypingCount++;
 
 			// 回復処理
-			if (typingCount >= 15) {
+			if (typingCount >= 20) {
 				Player.HP += 15;
 				if (Player.HP > Player.MaxHP) Player.HP = Player.MaxHP;
 				updatePlayerHPBar();

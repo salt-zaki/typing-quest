@@ -208,6 +208,17 @@ async function statusCheck(gameStatus){
 		msg1Elem.classList.remove('popup-message1-small'); // 旧クラス名を削除
 		msg1Elem.classList.add('popup-message1-large'); // 新しいクラス名を設定
 		const winner = sessionStorage.getItem("winner");
+
+		// popup-message2 を確実に再作成・挿入（重複防止）
+		if (document.getElementById("popup-message2") !== null) {
+			const msg2 = document.createElement("p");
+			msg2.id = "popup-message2";
+			msg2.classList.add("popup-message2");
+
+			const popupContent = document.querySelector(".popup-content");
+			const endBtn = document.getElementById("endButton");
+			popupContent.insertBefore(msg2, endBtn); // endButtonの前に追加
+		}
 		if(winner === "enemy"){
 			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
@@ -267,11 +278,11 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 210;
+				ans = 10;
 				x = 1;
 				break;
 			case 2:
-				ans = 210;
+				ans = 10;
 				x = 1.5;
 				break;
 			case 3:

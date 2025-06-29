@@ -73,11 +73,11 @@ function startTimerBar() {
 			input.disabled = true; // 要素削除：input無効
 
 			message.textContent = Enemy.Name +"から攻撃を受けた";
-	  		PlayerDamage(); // プレイヤーがダメージを受けた場合に点滅
+	  	PlayerDamage(); // プレイヤーがダメージを受けた場合に点滅
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
-			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("NowDL"));
+			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL")); // DanegeLevelを戻す
 			setTimeout(() => { // status判定
 				statusCheck(gameStatus);
 			}, 3000);
@@ -102,14 +102,13 @@ async function statusCheck(gameStatus){
 		if(AbilityCount % 5 === 0){
 			lockHeelCount = AbilityCount + 3; // シドー特別設定
 			level = 6; // ダメージlevel6設定
-			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
+			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
 			sessionStorage.setItem("inputTime",8);
 			await AbilityAttack();
 		}else {
 			if(AbilityCount === lockHeelCount) sessionStorage.setItem("typingCount", true); // シドー特別設定
-			sessionStorage.setItem("NowDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
 			sessionStorage.setItem("inputTime",8);
 		}
@@ -150,6 +149,17 @@ async function statusCheck(gameStatus){
 		msg1Elem.classList.remove('popup-message1-small'); // 旧クラス名を削除
 		msg1Elem.classList.add('popup-message1-large'); // 新しいクラス名を設定
 		const winner = sessionStorage.getItem("winner");
+
+		// popup-message2 を確実に再作成・挿入（重複防止）
+		if (document.getElementById("popup-message2") !== null) {
+			const msg2 = document.createElement("p");
+			msg2.id = "popup-message2";
+			msg2.classList.add("popup-message2");
+
+			const popupContent = document.querySelector(".popup-content");
+			const endBtn = document.getElementById("endButton");
+			popupContent.insertBefore(msg2, endBtn); // endButtonの前に追加
+		}
 		if(winner === "enemy"){
 			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
@@ -210,11 +220,11 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	let x;
 	switch(level) {
 			case 1:
-				ans = 210;
+				ans = 10;
 				x = 1;
 				break;
 			case 2:
-				ans = 210;
+				ans = 10;
 				x = 1.5;
 				break;
 			case 3:
@@ -343,7 +353,7 @@ async function initBattle() {
 	// 初回問題集の取得
 	let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
 	let stage = Number(sessionStorage.getItem("stageNo"));
-	sessionStorage.setItem("NowDL",sessionStorage.getItem("DamageLevel"));
+	sessionStorage.setItem("SaveDL",sessionStorage.getItem("DamageLevel"));
 	findQuestions(level,stage).then(result => { // level1の問題を取得
 		questionList = result;
 		let max = questionList.length;
