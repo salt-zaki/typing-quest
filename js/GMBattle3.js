@@ -154,7 +154,7 @@ async function statusCheck(gameStatus){
 			ConsecutiveAttack = 1; // 通常時
 			sessionStorage.setItem("ConsecutiveAttack", 1); // 
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",17);
+			sessionStorage.setItem("inputTime",8);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		if(ConsecutiveAttack === 1){

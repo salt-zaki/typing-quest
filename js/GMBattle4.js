@@ -106,7 +106,7 @@ async function statusCheck(gameStatus){
 			await AbilityAttack();
 		}else {
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
-			sessionStorage.setItem("inputTime",70);
+			sessionStorage.setItem("inputTime",7);
 		}
 		let stage = Number(sessionStorage.getItem("stageNo"));
 		await findQuestions(level,stage).then(result => {

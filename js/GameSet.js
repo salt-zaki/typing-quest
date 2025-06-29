@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("選択：邪神ハーゴン");
         break;
       case "bossId3":
-        Estatus = new Status("エスターク", 130, 130, "enemyImg3-1.jpg");
+        Estatus = new Status("ピサロ", 130, 130, "enemyImg3-1.jpg");
         sessionStorage.setItem("stageNo",3);
         console.log("選択：エスターク");
         break;

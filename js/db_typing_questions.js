@@ -37,7 +37,7 @@ async function findQuestions(level,stage) {
 			.where("stage", "==", stage);
 
 		let querySnapshot = await queryRef.get();
-		const results = [];
+		let results = [];
 
 		querySnapshot.forEach((docSnap) => {
 			results.push(docSnap.data());
@@ -78,7 +78,7 @@ async function findQuestions(level,stage) {
 		return results;
 	} catch (err) {
     	console.error("findQuestions エラー:", err);
-    	return [];
+    	return null;
 	}
 }
 
