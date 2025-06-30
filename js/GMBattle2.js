@@ -77,7 +77,7 @@ function startTimerBar() {
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
-			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL")); // DanegeLevelを戻す
+			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL") || 1); // DanegeLevelを戻す
 			setTimeout(() => { // status判定
 				statusCheck(gameStatus);
 			}, 3000);

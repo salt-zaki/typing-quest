@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>TypingQuest</title>
-  <link rel="stylesheet" href="css/gameBattle.css">
   <link rel="stylesheet" href="css/gameEffect.css">
   <link rel="stylesheet" href="css/gamePop.css">
+  <link rel="stylesheet" href="css/gameBattle.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
@@ -36,7 +36,7 @@
       <p id="message">正しく入力してください</p>
       <div class="question-list">
         <p id="translation" style="visibility:hidden"> </p>
-        <p id="text" style="visibility:hidden"> </p>
+        <p id="text" style="visibility:hidden"></p>
       </div>
 
       <!-- autocomplete="off" 入力履歴非表示。formとinputに設定 -->
@@ -72,7 +72,7 @@
   </div>
 
   <!-- POPUP表示 -->
-	<div id="popup" class="popup hidden">
+	<div id="popup" class="popup">
     <div class="popup-content">
       <p id="popup-message1"></p>
       <p id="popup-message2"></p>

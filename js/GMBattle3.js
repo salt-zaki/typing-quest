@@ -88,11 +88,12 @@ function startTimerBar() {
 					damageJudge(1, "player");
 					const gameStatus = sessionStorage.getItem("gameStatus");
 					if(EndConsecutiveCount ===  Number(sessionStorage.getItem("ConsecutiveAttack"))){
+						message.textContent = AttackConsecutiveCount + "回、攻撃をかわした";
 						if (window.stopTimerEarly) stopTimerEarly();
 						// 連続攻撃終了⇒通常攻撃へ
 						setTimeout(() => {
 							statusCheck(gameStatus);
-						}, 3000);
+						}, 1000);
 					}else{
 						// 連続攻撃継続
 						// HP判定
@@ -152,7 +153,7 @@ async function statusCheck(gameStatus){
 			await AbilityAttack();
 		}else {
 			ConsecutiveAttack = 1; // 通常時
-			sessionStorage.setItem("ConsecutiveAttack", 1); // 
+			sessionStorage.setItem("ConsecutiveAttack", 1); //
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
 			sessionStorage.setItem("inputTime",8);
 		}
@@ -476,14 +477,14 @@ function matchTyping() {  // 定義したinput.入力するたびに処理実行
 				// 全てタイピングした場合
 				if(AttackConsecutiveCount === Number(sessionStorage.getItem("ConsecutiveAttack"))){
 					damageJudge(6, "enemy"); // ダメージ40
-					message.textContent = "勇者の攻撃";
+					message.textContent = "勇者のカウンター攻撃";
 					EnemyDamage(); // プレイヤーがダメージを受けた場合に点滅
 				}
 				const gameStatus = sessionStorage.getItem("gameStatus");
 				if (window.stopTimerEarly) stopTimerEarly(); // resolve("typed") が呼ばれてループが進む(タイマー停止)
 				setTimeout(() => { // status判定
 					statusCheck(gameStatus);
-				}, 3000);
+				}, 1000);
 			}else {
 				// 継続
 				message.textContent = Enemy.Name + "の攻撃をかわした";

@@ -1,7 +1,7 @@
 let db;
 
 // メッセージ表示（タイピング風）
-const nextMsg = "さすがだな。伝説の勇者とその一族たちよ。<br>しかし不幸なことだ...<br>なまじ強いばかりに私の本当のすがたを<br>見ることになるとは...!!";
+const nextMsg = "???があらわれた...<br>「勇者よ。なにゆえもがき生きるのか？<br>滅びこそ我が喜び。死にゆく者こそ美しい。<br>さぁ！我が腕の中で息絶えるがよい!!」";
 
 // 常にEnter押下による送信をブロック
 const form = document.getElementById('typingForm');
@@ -14,9 +14,9 @@ document.getElementById("wordInput").addEventListener("input", function() {
 this.value = this.value.replace(/[^\x20-\x7E]/g, ''); // 半角英数字と記号以外を除去
 });
 
-//　特殊攻撃
+//　特殊攻撃POP表示
 function AbilityAttack(){
-	const KillMsg = "りゅうおうは力をためている。<br>りゅうおうのまわりに邪悪なオーラが集まっている!!<br>「…これで終わりだ!!」<br>りゅうおうは『終焉の業火』をはなった！";
+	const KillMsg = "「滅びよ!!」<br>ゾーマが呪文を唱えた<br>「破滅の炎」<br>";
 	PopSet("たたかう"); // 共通処理
 	let msg1Elem = document.getElementById('popup-message1');
 	msg1Elem.classList.remove('popup-message1-small');
@@ -76,7 +76,7 @@ function startTimerBar() {
 			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
 			damageJudge(level, "player"); // レベル・ダメージ判定
 			const gameStatus = sessionStorage.getItem("gameStatus");
-			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL")); // DanegeLevelを戻す
+			sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL") || 1); // DanegeLevelを戻す
 			setTimeout(() => { // status判定
 				statusCheck(gameStatus);
 			}, 3000);
@@ -91,7 +91,7 @@ function startTimerBar() {
 	requestAnimationFrame(updateBar);
 }
 
-let AbilityCount = 1; // 特殊攻撃カウント
+let AbilityCount = 2; // 特殊攻撃カウント
 // ゲーム管理
 async function statusCheck(gameStatus){
 	if (gameStatus === "play"){
@@ -100,9 +100,9 @@ async function statusCheck(gameStatus){
 		if(AbilityCount % 4 === 0){
 			level = 5; // ダメージlevel6設定
 			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
-			sessionStorage.setItem("DamageLevel", 5);
+			sessionStorage.setItem("DamageLevel", 4);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",10);
+			sessionStorage.setItem("inputTime",12);
 			await AbilityAttack();
 		}else {
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
@@ -194,14 +194,11 @@ function updateEnemyHPBar() { // enemy
 
 	// HP色変化
 	if (enemyHPPercentage <= (0.3 * Enemy.MaxHP)) {
-		sessionStorage.setItem("DamageLevel",4);
+		sessionStorage.setItem("DamageLevel",3);
 	    eHPBar.style.backgroundColor = "red";
 	}else if (enemyHPPercentage <= (0.6 * Enemy.MaxHP)) {
-		sessionStorage.setItem("DamageLevel",3);
-		eHPBar.style.backgroundColor = "orange";
-	}else if (enemyHPPercentage <= (0.8 * Enemy.MaxHP)) {
 		sessionStorage.setItem("DamageLevel",2);
-		eHPBar.style.backgroundColor = "#4caf50";
+		eHPBar.style.backgroundColor = "orange";
 	}else {
 		sessionStorage.setItem("DamageLevel",1);
 		eHPBar.style.backgroundColor = "#4caf50";
@@ -232,10 +229,6 @@ function DamageLevel(level, hitDamage,DummyHP) {
 				x = 2;
 				break;
 			case 5:
-				ans = 20;
-				x = 2;
-				break;
-			case 6:
 				if (AbilityTypingCount === displayRomajiLngth) ans = 0;
 				else if (AbilityTypingCount >= displayRomajiLngth * 0.8) ans = 20;
 				else if (AbilityTypingCount >= displayRomajiLngth * 0.6) ans = 40;
@@ -251,7 +244,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 	if(hitDamage === "player") {
 		DummyHP = DummyHP-ans*x; // playerが受けるダメージ
 	}else {
-		if (level === 6) ans = 0;
+		if (level === 6) ans = 0; // 特殊攻撃では相手はダメージ無し
 		DummyHP = DummyHP-ans; // enemyが受けるダメージ
 	}
 	return DummyHP;
@@ -304,7 +297,7 @@ function showQuestion() {
 		current.length < shortest.length ? current : shortest
 	);
 
-  const text = document.getElementById("text"); // タイピング文字
+  	const text = document.getElementById("text"); // タイピング文字
 	const translation = document.getElementById("translation"); // 日本語
 	const input = document.getElementById("wordInput");
 
@@ -325,14 +318,18 @@ function showQuestion() {
 	displayRomajiLngth = displayRomaji.length;
 
 	text.style.visibility = "visible";
+	text.scrollLeft = 0; // 横スクロール開始位置を左0
 	translation.style.visibility = "visible";
 	input.disabled = true; // 要素削除：input無効
 	input.focus(); // 要素inputにフォーカスを設定
 }
 
-let typingCount; // タイピングカウント
+let typingCount = 0; // タイピングカウント
 let AbilityTypingCount; // 特殊設定カウント
 let displayRomajiLngth;
+let count; // ゾーマ特殊設定
+if(sessionStorage.getItem("StageLevel") === 0) sessionStorage.setItem("Count", 20);
+else sessionStorage.setItem("Count", 25);
 // メイン //
 // // 初期化関数を実行して読み込み時に開始。jsファイルを変数にしたため読込時の発火が使用できなくなったので初期化してる
 async function initBattle() {
@@ -382,48 +379,65 @@ async function initBattle() {
 			AbilityTypingCount++;
 
 			// 回復処理
-			if (typingCount >= 20) {
+			if (typingCount >= Number(sessionStorage.getItem("Count"))) {
 				Player.HP += 15;
 				if (Player.HP > Player.MaxHP) Player.HP = Player.MaxHP;
 				updatePlayerHPBar();
 				showHealEffect();
 				typingCount = 0;
+				console.log("HP回復");
 			}
-		}
 
-		// 表示の更新（画面上に最も近い候補を表示して色分け）
-		let matchedCandidate = romajiCandidatesList.find(c => c.startsWith(userInput));
-		if (!matchedCandidate) { // 上記見つからなかった場合の保険
-			matchedCandidate = romajiCandidatesList.reduce((shortest, current) =>
-				current.length < shortest.length ? current : shortest
-			);
-		}
+			// 表示の更新（画面上に最も近い候補を表示して色分け）
+			let matchedCandidate = romajiCandidatesList.find(c => c.startsWith(userInput));
+			if (!matchedCandidate) { // 上記見つからなかった場合の保険
+				matchedCandidate = romajiCandidatesList.reduce((shortest, current) =>
+					current.length < shortest.length ? current : shortest
+				);
+			}
+	
+			const textElem = document.getElementById("text");
+			textElem.innerHTML = "";
+			// matchedCandidateの先頭からuserInputの文字数だけグレーに設定し再表示
+			for (let i = 0; i < matchedCandidate.length; i++) {
+				const span = document.createElement("span");
+				span.id = `char${i}`;
+				span.textContent = matchedCandidate[i];
+				span.style.color = i < userInput.length ? "gray" : "white";
+				textElem.appendChild(span);
+			}
 
-		const textElem = document.getElementById("text");
-		textElem.innerHTML = "";
-		// matchedCandidateの先頭からuserInputの文字数だけグレーに設定し再表示
-		for (let i = 0; i < matchedCandidate.length; i++) {
-			const span = document.createElement("span");
-			span.id = `char${i}`;
-			span.textContent = matchedCandidate[i];
-			span.style.color = i < userInput.length ? "gray" : "white";
-			textElem.appendChild(span);
-		}
+			const typedLength = input.value.length;
+			const nextIndex = typedLength + 8; // 常に5文字先が見えるようにする
 
-		// すべて正しく入力されたら自動送信
-		if (isInputExactlyAnyCandidate(userInput, romajiCandidatesList)) { // ローマ字候補と一致判定
-			timerRunning = false; // タイマー停止
-			input.disabled = true; // 入力停止
-			let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
-			damageJudge(level, "enemy"); // レベル・ダメージ判定
+			const targetSpan = document.getElementById("char" + nextIndex);
+			if (targetSpan) {
+				targetSpan.scrollIntoView({
+				behavior: "smooth",
+				inline: "end",    // 右端に寄せる
+				block: "nearest"  // 縦スクロールはしない
+				});
+			}
 
-			// ダメージエフェクト
-			message.textContent = "勇者の攻撃";
-			EnemyDamage(); // プレイヤーがダメージを受けた場合に点滅
-			const gameStatus = sessionStorage.getItem("gameStatus");
-			setTimeout(() => { // status判定
-				statusCheck(gameStatus);
-			}, 3000);
+			// すべて正しく入力されたら自動送信
+			if (isInputExactlyAnyCandidate(userInput, romajiCandidatesList)) { // ローマ字候補と一致判定
+				timerRunning = false; // タイマー停止
+				input.disabled = true; // 入力停止
+				let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel"));
+				if(sessionStorage.getItem("gameStatus") === "AbilityAttack"){
+					// 特殊攻撃を全てタイピングした場合の挙動
+					message.textContent = Enemy.Name + "の攻撃を防いだ";
+					damageJudge(level, "enemy"); // レベル・ダメージ判定
+				}else {
+					message.textContent = "勇者の攻撃";
+					damageJudge(level, "enemy"); // レベル・ダメージ判定
+					EnemyDamage(); // プレイヤーがダメージを受けた場合に点滅エフェクト
+				}
+				const gameStatus = sessionStorage.getItem("gameStatus");
+				setTimeout(() => { // status判定
+					statusCheck(gameStatus);
+				}, 3000);
+			}
 		}
 	});
 }

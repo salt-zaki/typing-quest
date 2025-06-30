@@ -71,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // 初期設定と画像IDに応じた処理
     sessionStorage.setItem("userName", userName);
     sessionStorage.setItem("StageLevel", 0);
-    sessionStorage.setItem("damage", "");
     // Beanにenemyとplayerのstatusを設定
     const Pstatus = new Status(userName, 100, 100, "playerImg1-1.jpg");
     let Estatus;
@@ -89,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
       case "bossId3":
         Estatus = new Status("ピサロ", 130, 130, "enemyImg3-1.jpg");
         sessionStorage.setItem("stageNo",3);
-        console.log("選択：エスターク");
+        console.log("選択：ピサロ");
         break;
       case "bossId4":
         Estatus = new Status("バラモス", 150, 150, "enemyImg4-1.jpg");

@@ -14,11 +14,11 @@
 /* 回復エフェクト */
 #heal-effect {
   display: none;
-  position: relative; /* この親になる */
+  position: fixed; /* この親になる */
   width: 200px;
   height: 50px;
-  left: -40vw;
-  bottom: -35vh;
+  left: 50%;  /* 画面幅の30%の位置に表示 */
+  top: 50%;
   pointer-events: none; /* その要素の上にマウスカーソルを置いても、クリックやホバーなどのユーザー操作を一切受け付けません。*/
 }
 
@@ -29,8 +29,8 @@
 
 .sparkle1 {
   position: absolute;
-  top: 35%;
-  left: -15%;
+  top: 35vh;
+  right: 30%;
   transform: translate(-50%, -50%); /* 真ん中に揃える */
   width: 200px;
   height: 30px;
@@ -43,8 +43,8 @@
   width: 200px;
   height: 200px;
   position: absolute;
-  top: -25vh;
-  left: -34vw;
+  top: 70%;
+  right: 250%;
   background: radial-gradient(circle, rgb(1, 255, 192) 0%, rgba(0,255,255,0) 70%);
   border-radius: 50%;
   animation: sparkleUp 1.5s ease-out forwards;
@@ -56,8 +56,8 @@
   font-weight: bold;
   font-size: 24px;
   position: absolute;
-  top: 5vh;
-  left: 0.5vw;
+  top: 37vh;
+  right: 50%;
   animation: floatUp 1.5s ease-out forwards;
 }
 
