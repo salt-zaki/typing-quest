@@ -380,7 +380,7 @@ function showQuestion() {
 		span.style.color = "white";
 		text.appendChild(span);
 	}
-
+	document.getElementById("text").scrollLeft = 0;
 	text.style.visibility = "visible";
 	translation.style.visibility = "visible";
 	input.disabled = true; // 要素削除：input無効
@@ -451,6 +451,18 @@ function matchTyping() {  // 定義したinput.入力するたびに処理実行
 		span.textContent = matchedCandidate[i];
 		span.style.color = i < userInput.length ? "gray" : "white";
 		textElem.appendChild(span);
+	}
+
+	// 文字スクロール
+	const typedLength = input.value.length;
+	const nextIndex = typedLength + 8; // 常に5文字先が見えるようにする
+	const targetSpan = document.getElementById("char" + nextIndex);
+	if (targetSpan) {
+		targetSpan.scrollIntoView({
+		behavior: "smooth",
+		inline: "end",    // 右端に寄せる
+		block: "nearest"  // 縦スクロールはしない
+		});
 	}
 
 	// すべて正しく入力されたら自動送信

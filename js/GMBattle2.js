@@ -105,10 +105,11 @@ async function statusCheck(gameStatus){
 			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",8);
+			sessionStorage.setItem("inputTime",7.5);
 			await AbilityAttack();
 		}else {
 			if(AbilityCount === lockHeelCount) sessionStorage.setItem("typingCount", true); // シドー特別設定
+			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
 			sessionStorage.setItem("inputTime",8);
 		}
@@ -330,7 +331,7 @@ function showQuestion() {
 		span.style.color = "white";
 		text.appendChild(span);
 	}
-
+	document.getElementById("text").scrollLeft = 0;
 	text.style.visibility = "visible";
 	translation.style.visibility = "visible";
 	input.disabled = true; // 要素削除：input無効
@@ -415,6 +416,18 @@ async function initBattle() {
 			span.textContent = matchedCandidate[i];
 			span.style.color = i < userInput.length ? "gray" : "white";
 			textElem.appendChild(span);
+		}
+
+		// 文字スクロール
+		const typedLength = input.value.length;
+		const nextIndex = typedLength + 8; // 常に5文字先が見えるようにする
+		const targetSpan = document.getElementById("char" + nextIndex);
+		if (targetSpan) {
+			targetSpan.scrollIntoView({
+			behavior: "smooth",
+			inline: "end",    // 右端に寄せる
+			block: "nearest"  // 縦スクロールはしない
+			});
 		}
 
 		// すべて正しく入力されたら自動送信

@@ -105,6 +105,7 @@ async function statusCheck(gameStatus){
 			sessionStorage.setItem("inputTime",12);
 			await AbilityAttack();
 		}else {
+			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // 通常level
 			sessionStorage.setItem("inputTime",7);
 		}
@@ -316,7 +317,7 @@ function showQuestion() {
 		text.appendChild(span);
 	}
 	displayRomajiLngth = displayRomaji.length;
-
+	document.getElementById("text").scrollLeft = 0;
 	text.style.visibility = "visible";
 	text.scrollLeft = 0; // 横スクロール開始位置を左0
 	translation.style.visibility = "visible";
@@ -407,9 +408,9 @@ async function initBattle() {
 				textElem.appendChild(span);
 			}
 
+			// 文字スクロール
 			const typedLength = input.value.length;
 			const nextIndex = typedLength + 8; // 常に5文字先が見えるようにする
-
 			const targetSpan = document.getElementById("char" + nextIndex);
 			if (targetSpan) {
 				targetSpan.scrollIntoView({

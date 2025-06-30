@@ -144,10 +144,11 @@ p {
   white-space: nowrap !important; /* 折り返しを禁止 */
   overflow-x: auto;            /* 横スクロールを許可 */
   max-width: 100%;
+  direction: ltr; /* left-to-right 表示にしておく */
 }
-#text p{
+/* #text p{
   width: 100%;
-}
+} */
 
 #text::-webkit-scrollbar {
   display: none;               /* Chrome/Safari用：スクロールバー非表示 */
