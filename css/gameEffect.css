@@ -21,12 +21,10 @@
   top: 50%;
   pointer-events: none; /* その要素の上にマウスカーソルを置いても、クリックやホバーなどのユーザー操作を一切受け付けません。*/
 }
-
 #heal-effect.show {
   display: block;
   opacity: 1;
 }
-
 .sparkle1 {
   position: absolute;
   top: 35vh;
@@ -38,7 +36,6 @@
   border-radius: 50%;
   animation: sparkleUp 1.0s ease-out forwards;
 }
-
 .sparkle2 {
   width: 200px;
   height: 200px;
@@ -49,7 +46,6 @@
   border-radius: 50%;
   animation: sparkleUp 1.5s ease-out forwards;
 }
-
 .heal-text {
   width: 100px;
   color: #00ffff;
@@ -58,6 +54,54 @@
   position: absolute;
   top: 37vh;
   right: 50%;
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+/* enemy回復エフェクト */
+#enemy-heal-effect {
+  display: none;
+  position: fixed; /* この親になる */
+  width: 200px;
+  height: 50px;
+  left: 50%;  /* 画面幅の30%の位置に表示 */
+  top: 50%;
+  pointer-events: none; /* その要素の上にマウスカーソルを置いても、クリックやホバーなどのユーザー操作を一切受け付けません。*/
+}
+#enemy-heal-effect.show {
+  display: block;
+  opacity: 1;
+}
+.sparkle3 {
+  position: absolute;
+  top: -45vh;
+  right: -60%;
+  transform: translate(-50%, -50%); /* 真ん中に揃える */
+  width: 200px;
+  height: 30px;
+  background: radial-gradient(circle, rgba(1, 255, 191, 0.9) 0%, rgba(0,255,255,0) 70%);
+  border-radius: 50%;
+  animation: sparkleUp 1.0s ease-out forwards;
+}
+
+.sparkle4 {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: -500%;
+  left: 160%;
+  background: radial-gradient(circle, rgb(1, 255, 192) 0%, rgba(0,255,255,0) 70%);
+  border-radius: 50%;
+  animation: sparkleUp 1.5s ease-out forwards;
+}
+
+.enemy-heal-text {
+  width: 100px;
+  color: #00ffff;
+  font-weight: bold;
+  font-size: 24px;
+  position: absolute;
+  top: -45vh;
+  right: -30%;
   animation: floatUp 1.5s ease-out forwards;
 }
 

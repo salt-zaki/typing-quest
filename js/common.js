@@ -202,6 +202,18 @@ function showHealEffect() {
   	}, 3000);  // アニメーション時間に合わせる
 }
 
+function showHealEffect2() {
+	const effect = document.getElementById("enemy-heal-effect");
+
+	// 表示してアニメーション開始
+	effect.classList.add('show');
+
+	// 1秒後にアニメーション終わるので非表示に戻す
+	setTimeout(() => {
+    	effect.classList.remove('show');
+  	}, 3000);  // アニメーション時間に合わせる
+}
+
 // タイピング風メッセージ
 function tyipngMessage(message,MsgId,callback) {
   let index = 0;
