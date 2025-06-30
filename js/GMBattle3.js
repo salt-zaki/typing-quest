@@ -149,7 +149,7 @@ async function statusCheck(gameStatus){
 			setConsecutiveAttack();
 			ConsecutiveAttack = Number(sessionStorage.getItem("ConsecutiveAttack")); // ループ回数
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",3);
+			sessionStorage.setItem("inputTime",2);
 			await AbilityAttack();
 		}else {
 			ConsecutiveAttack = 1; // 通常時
