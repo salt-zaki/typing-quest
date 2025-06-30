@@ -102,7 +102,7 @@ async function statusCheck(gameStatus){
 			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 			sessionStorage.setItem("DamageLevel", 4);
 			sessionStorage.setItem("gameStatus","AbilityAttack");
-			sessionStorage.setItem("inputTime",12);
+			sessionStorage.setItem("inputTime",15);
 			await AbilityAttack();
 		}else {
 			sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
