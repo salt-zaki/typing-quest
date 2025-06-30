@@ -146,9 +146,6 @@ p {
   max-width: 100%;
   direction: ltr; /* left-to-right 表示にしておく */
 }
-/* #text p{
-  width: 100%;
-} */
 
 #text::-webkit-scrollbar {
   display: none;               /* Chrome/Safari用：スクロールバー非表示 */
