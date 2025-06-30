@@ -181,7 +181,6 @@ async function statusCheck(gameStatus){
 			}
 		}
 	}else if (gameStatus === "next"){
-		sessionStorage.setItem("Count", 25); // エスターク特殊文字
 		PopSet("すすむ"); // 共通処理
 		let msg1Elem = document.getElementById('popup-message1');
 		msg1Elem.classList.remove('popup-message1-small');
@@ -389,9 +388,14 @@ function showQuestion() {
 
 let typingCount; // タイピングカウント
 document.getElementById("wordInput").addEventListener("input", matchTyping); // inputを定義
-sessionStorage.setItem("typingDamage", 5); // エスターク特殊文字
-sessionStorage.setItem("Count", 20); // エスターク特殊文字
-
+// エスターク特殊設定
+if(sessionStorage.getItem("StageLevel") === 0) {
+	sessionStorage.setItem("Count", 20);
+	sessionStorage.setItem("typingDamage", 5);
+}else {
+	sessionStorage.setItem("Count", 25);
+	sessionStorage.setItem("typingDamage", 10);
+}
 // スペルを一文字ごとに確認し色付けする
 function matchTyping() {  // 定義したinput.入力するたびに処理実行
 	const input = document.getElementById("wordInput");
