@@ -141,6 +141,9 @@ async function statusCheck(gameStatus){
 			}, 500);
 		}, 1000);
 	}else if (gameStatus === "end"){
+		const input = document.getElementById("wordInput");
+		timerRunning = false;	 // タイマー無効
+		input.disabled = true; // 要素削除：input無効
 		PopSet("おわり"); // 共通処理
 		let msg1Elem = document.getElementById('popup-message1');
 		msg1Elem.classList.remove('popup-message1-small'); // 旧クラス名を削除
@@ -345,7 +348,7 @@ async function initBattle() {
 	// 初回問題集の取得
 	let level = Number(sessionStorage.getItem("DamageLevel")) + Number(sessionStorage.getItem("StageLevel")); // levelの問題を取得
 	let stage = Number(sessionStorage.getItem("stageNo"));
-	sessionStorage.setItem("NowDL",sessionStorage.getItem("DamageLevel"));
+	sessionStorage.setItem("SaveDL",sessionStorage.getItem("DamageLevel"));
 	findQuestions(level,stage).then(result => { // level1の問題を取得
 		questionList = result;
 		let max = questionList.length;

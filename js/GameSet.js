@@ -10,7 +10,7 @@ function openBoss(bossId) {
 async function openImg(userName){
   const result = await findUser(userName);
   if(result){
-    for (let i = 2; i < 5; i++) {
+    for (let i = 2; i <= 5; i++) {
       const stageKey = "stage" + i; // "stage2", "stage3", ...
       if (result[stageKey] === true) { // 変数を使用する場合は[]。カラム名を指定する場合はresult.stage1
         openBoss("close" + i);
@@ -49,8 +49,22 @@ document.getElementById("getNameBtn").addEventListener("click", async function (
   nameMsg.style.color = "white";
   nameMsg.innerText = "挑むボスを選んでください";
   document.getElementById("bossSelection").style.visibility = "visible";
+  document.getElementById("treasureBox").style.visibility = "visible";
+  document.getElementById("box2-1").style.pointerEvents = "none"; // 押せない
 });
 
+// 宝箱クリックで画像切替＋ポップアップ表示
+document.getElementById("box2-1").addEventListener("click", function (e) {
+  e.preventDefault(); // aタグのリンク動作を無効に
+  this.style.display = "none"; // 開封済みに切り替え
+  document.getElementById("box2-2").style.display = "block";
+  document.getElementById("boxPopup").style.display = "block"; // ポップアップ表示
+});
+
+// ポップアップ閉じるボタン
+function closePopup() {
+  document.getElementById("boxPopup").style.display = "none";
+}
 
 // DOMContentLoaded を使わないと、非表示状態の要素はまだ読み込まれておらず、querySelectorAll() で取得できないことがあるため起動時に読み込む
 document.addEventListener("DOMContentLoaded", () => {
@@ -94,6 +108,11 @@ document.addEventListener("DOMContentLoaded", () => {
         Estatus = new Status("バラモス", 150, 150, "enemyImg4-1.jpg");
         sessionStorage.setItem("stageNo",4);
         console.log("選択：バラモス");
+        break;
+      case "bossId5":
+        Estatus = new Status("エスターク", 270, 270, "enemyImg5-1.jpg");
+        sessionStorage.setItem("stageNo",5);
+        console.log("選択：エスターク");
         break;
       default:
         console.log("不明なボスがクリックされました");

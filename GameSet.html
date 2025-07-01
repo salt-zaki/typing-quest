@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>GameTitle</title>
+  <title>GameSet</title>
   <link rel="stylesheet" href="css/gameTitle.css">
   <link rel="stylesheet" href="css/gameSet.css">
   <!-- Firebase SDK -->
@@ -20,34 +20,59 @@
   <p class ="error-message" id="nameMsg"></p>
   <a href="GameTitle.html" id="href">タイトルへ戻る</a>
 
-  <!-- BOSS選択 -->
-  <div class="boss-selection" id="bossSelection" style="visibility: hidden;">
-    <div class="boss" id="boss1">
-      <a href="GameStart.html" class="linkBoss">
-        <img src="img/enemyImg1-1.jpg" alt="りゅうおう" class="boss-Img" id="bossId1" >
-      </a>
+  <div class="main-wrapper">
+    <!-- BOSS選択 -->
+    <div class="boss-selection" id="bossSelection" style="visibility: hidden;">
+      <div class="boss" id="boss1">
+        <a href="GameStart.html" class="linkBoss">
+          <img src="img/enemyImg1-1.jpg" alt="りゅうおう" class="boss-Img" id="bossId1" >
+        </a>
+      </div>
+
+      <div class="boss" id="boss2">
+        <a href="GameStart.html" class="linkBoss">
+          <img src="img/enemyImg2-1.jpg" alt="邪神ハーゴン" class="boss-Img" id="bossId2" >
+          <img src="img/door.jpg" alt="封印" class="close-Img" id="close2">
+        </a>
+      </div>
+
+      <div class="boss" id="boss5">
+        <a href="GameStart.html" class="linkBoss">
+          <img src="img/enemyImg5-1.jpg" alt="エスターク" class="boss-Img" id="bossId5" >
+          <img src="img/door.jpg" alt="封印" class="close-Img" id="close5">
+        </a>
+      </div>
+
+      <div class="boss" id="boss3">
+        <a href="GameStart.html" class="linkBoss">
+          <img src="img/enemyImg3-1.jpg" alt="エスターク" class="boss-Img" id="bossId3" >
+          <img src="img/door.jpg" alt="封印" class="close-Img" id="close3">
+        </a>
+      </div>
+
+      <div class="boss" id="boss4">
+        <a href="GameStart.html" class="linkBoss">
+          <img src="img/enemyImg4-1.jpg" alt="バラモス" class="boss-Img" id="bossId4" >
+          <img src="img/door.jpg" alt="封印" class="close-Img" id="close4">
+        </a>
+      </div>
     </div>
 
-    <div class="boss" id="boss2">
-      <a href="GameStart.html" class="linkBoss">
-        <img src="img/enemyImg2-1.jpg" alt="邪神ハーゴン" class="boss-Img" id="bossId2" >
-        <img src="img/door.jpg" alt="封印" class="close-Img" id="close2">
-      </a>
+    <!-- 宝箱 -->
+    <div class="treasure-wrapper">
+      <div class="treasureBox" id="treasureBox" style="visibility: hidden;">
+        <a href="GameStart.html" class="linkBoss">
+          <img src="img/box2-2.jpg" alt="宝箱2" class="box2-Img" id="box2-2" >
+          <img src="img/box2-1.jpg" alt="宝箱1" class="box1-Img" id="box2-1" >
+        </a>
+      </div>
     </div>
+  </div>
 
-    <div class="boss" id="boss3">
-      <a href="GameStart.html" class="linkBoss">
-        <img src="img/enemyImg3-1.jpg" alt="エスターク" class="boss-Img" id="bossId3" >
-        <img src="img/door.jpg" alt="封印" class="close-Img" id="close3">
-      </a>
-    </div>
-
-    <div class="boss" id="boss4">
-      <a href="GameStart.html" class="linkBoss">
-        <img src="img/enemyImg4-1.jpg" alt="バラモス" class="boss-Img" id="bossId4" >
-        <img src="img/door.jpg" alt="封印" class="close-Img" id="close4">
-      </a>
-    </div>
+  <!-- ポップアップ -->
+  <div id="boxPopup" style="display: none;" class="popup">
+    <p>宝箱を開けた！報酬をゲット！</p>
+    <button onclick="closePopup()">閉じる</button>
   </div>
 
   <script src="js/firebase-methods.js"></script>

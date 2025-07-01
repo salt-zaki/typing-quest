@@ -30,21 +30,45 @@ p{
   padding: 8px;      /* 内側の余白（見た目に余裕を） */
   border-radius: 6px; /* 角を丸める（オプション） */
 }
+.main-wrapper {
+  display: flex;
+  flex-direction: column; /* 縦並び */
+  align-items: center;     /* 中央寄せ */
+  justify-content: center;
+}
 
 /* GameSet.html 特有css */
 .boss-selection{
   display: flex;
   justify-content: center; /* 真ん中寄せ */
-  align-items: center;     /* 縦方向中央揃え */
-  gap: 10%;               /* 画像の間隔 */
+  /* align-items: center;     縦方向中央揃え */
+  height: 23vh;
+  width: 100%;
+  gap: 4%;               /* 画像の間隔 */
   visibility: hidden;     /* 初期非表示ならJSで切り替える */
-  margin-top: 3%;
+  margin-top: 2%;
 }
 
 .boss {
   position: relative;
   width: 15vw;
   height: 15vw;
+}
+
+#boss1, #boss4 {
+  top: -7vh;
+}
+
+#boss2, #boss3 {
+  top: 6vh;
+}
+
+#boss5 {
+  top: -5vh;
+}
+
+#close5 {
+  filter: brightness(0); /* 真っ黒にする */
 }
 
 .boss-Img{
@@ -67,3 +91,49 @@ p{
   z-index: 2; /* 前面（封印） */
 }
 
+/* 宝箱 */
+.treasure-wrapper {
+  display: flex;
+  justify-content: center;
+  height: 20vh; /* 必要十分な高さ */
+}
+
+.treasureBox {
+  top: 1.5vh;
+  width: 125px;
+  height: 125px;
+  position: relative;
+}
+
+.box1-Img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: none; /* ← 初期表示で非表示にする */
+}
+
+.box2-Img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: block; /* 表示する */
+}
+
+/* POP */
+.popup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 2px solid #00cccc;
+  padding: 20px;
+  z-index: 999;
+  box-shadow: 0 0 10px #00cccc;
+}

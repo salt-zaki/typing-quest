@@ -50,7 +50,7 @@ function nextBossStatus(){
 			Estatus = new Status("ゾーマ", 250, 250, "enemyImg4-2.jpg");
 			break;
 		case 5 :
-			Estatus = new Status("ゾーマ", 200, 200, "enemyImg5-2.jpg");
+			Estatus = new Status("エスターク", 250, 250, "enemyImg5-1.jpg");
 			break;
 		default :
 			console.log("Error");
