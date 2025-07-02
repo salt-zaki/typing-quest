@@ -27,7 +27,7 @@ function fastGameStatus() {
 	sessionStorage.setItem("gameStatus","play");
 	sessionStorage.setItem("StageLevel",0);
 	sessionStorage.setItem("DamageLevel",1);
-	sessionStorage.setItem("inputTime",7); // 初期タイマー設定
+	sessionStorage.setItem("inputTime",8); // 初期タイマー設定
 }
 
 // nextステージ

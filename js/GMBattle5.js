@@ -47,12 +47,15 @@ let startTime;
 let timerRunning = true; // タイマー有効
 function startTimerBar() {
 	return new Promise((resolve) => {
+		// ここで毎回初期化することでループごとにリセットされる
+    	let resolved = false;
 		const bar = document.getElementById("timer-bar");
 		const input = document.getElementById("wordInput");
 		const message = document.getElementById("message");
 		const totalTime = 1000 * Number(sessionStorage.getItem("inputTime")); // ミリ秒
 
 		startTime = null;
+		timerRunning = true;
 		input.disabled = false;
 		input.focus();
 		console.log("タイマー開始");
@@ -70,16 +73,16 @@ function startTimerBar() {
 				input.disabled = true;
 				let level;
 
-				// if (!resolved) {
-				// 	resolved = true; // ← これが重要
-				// 	resolve("timeout");
-				// }
+				if (!resolved) {
+					resolved = true; // ← これが重要
+					resolve("timeout");
+				}
 
 				if (Ability !== 3) {
 					if (Ability === 5){ // 回復
 						message.textContent = Enemy.Name + "が回復呪文を唱えた";
 						level = 7;
-						damageJudge(level, "player");
+						damageJudge(level, "enemy");
 						showHealEffect2();
 					}else { // 通常
 						message.textContent = Enemy.Name + "から攻撃を受けた";
@@ -89,6 +92,7 @@ function startTimerBar() {
 					}
 					const gameStatus = sessionStorage.getItem("gameStatus");
 					sessionStorage.setItem("DamageLevel", sessionStorage.getItem("SaveDL") || 2); // DanegeLevelを戻す
+					if (window.stopTimerEarly) stopTimerEarly();
 					setTimeout(() => {
 						statusCheck(gameStatus);
 					}, 3000);
@@ -104,7 +108,7 @@ function startTimerBar() {
 						// 連続攻撃終了⇒通常攻撃へ
 						setTimeout(() => {
 							statusCheck(gameStatus);
-						}, 1500);
+						}, 3000);
 					}else{
 						// 連続攻撃継続
 						if(Player.HP <= 0){ // HP判定
@@ -112,7 +116,7 @@ function startTimerBar() {
 							sessionStorage.setItem("winner", "enemy");
 							setTimeout(() => { // status判定
 								statusCheck("end");
-							}, 1500);
+							}, 2000);
 						}
 						if (window.stopTimerEarly) stopTimerEarly();
 					}
@@ -124,8 +128,10 @@ function startTimerBar() {
 
 		// 外部からタイマー強制終了（例：タイピング成功）させたい場合用
 		window.stopTimerEarly = () => {
+			// if(resolved) return;
 			console.log("resolve 発火：typed");
 			timerRunning = false;
+			resolved = true;
 			resolve("typed");
 		};
 		// 初期化
@@ -152,22 +158,22 @@ let stage; // 問題取得ステージ
 
 // 特殊攻撃判定
 function setAbility(){
-	Ability = 3;
-	// Ability = Math.floor(Math.random() * 5) + 1; // 1~4
+	// Ability = 5;
+	Ability = Math.floor(Math.random() * 5) + 1; // 1~4
 	sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 	sessionStorage.setItem("gameStatus","AbilityAttack");
 	switch (Ability){
 		case 1 :
-			sessionStorage.setItem("DamageLevel", 1); // level5+1
-			sessionStorage.setItem("inputTime",2);
-			sessionStorage.setItem("AbilityPopMsg","「消えろ！ 人間ども！」<br>エスタークは呪文を唱えた<br>「しゃくねつほのお」"); // POPメッセ
-			stage = 2;
+			sessionStorage.setItem("DamageLevel", 6); // level5+1
+			sessionStorage.setItem("inputTime",2.5);
+			sessionStorage.setItem("AbilityPopMsg","「すべてを焼き尽くす!」<br>エスタークは呪文を唱えた<br>「しゃくねつほのお」"); // POPメッセ
+			stage = 1;
 			break;
 		case 2 :
 			lockHeelCount = AbilityCount + 3; // 2ターン回復阻止
 			sessionStorage.setItem("DamageLevel", 5); // level5+1
 			sessionStorage.setItem("inputTime",7);
-			sessionStorage.setItem("AbilityPopMsg","エスタークは呪文を唱えた<br>「いてつくはどう」<br>勇者は２ターン回復できなくなった。"); // POPメッセ
+			sessionStorage.setItem("AbilityPopMsg","「すべてを凍てつかせよう…」エスタークは呪文を唱えた<br>「いてつくはどう」<br>勇者は２ターン回復できなくなった。"); // POPメッセ
 			stage = 1;
 			break;
 		case 3 :
@@ -175,20 +181,20 @@ function setAbility(){
 			QuestionsCount = 0; // リセット
 			sessionStorage.setItem("DamageLevel", 1); // level1
 			sessionStorage.setItem("inputTime",2.5);
-			sessionStorage.setItem("AbilityPopMsg","「消えろ！ 人間ども！」<br>エスタークは呪文を唱えた<br>エスタークの連続攻撃!!<br>「イオナズン」"); // POPメッセ
+			sessionStorage.setItem("AbilityPopMsg","「消えろ… 人間ども!!」<br>エスタークは呪文を唱えた<br>「イオナズン」<br>エスタークの連続攻撃!!"); // POPメッセ
 			stage = 2;
 			break;
 		case 4 :
 			AbilityTypingCount = 0;
 			sessionStorage.setItem("DamageLevel", 5);
 			sessionStorage.setItem("inputTime",15);
-			sessionStorage.setItem("AbilityPopMsg","「消えろ！ 人間ども！」<br>エスタークは呪文を唱えた<br>「かがやくいき」"); // POPメッセ
+			sessionStorage.setItem("AbilityPopMsg","「滅びよ……」<br>エスタークは呪文を唱えた<br>「かがやくいき」"); // POPメッセ
 			stage = 4;
 			break;
 		case 5 :
 			sessionStorage.setItem("DamageLevel", 4);
 			sessionStorage.setItem("inputTime",6);
-			sessionStorage.setItem("AbilityPopMsg","「消えろ！ 人間ども！」<br>エスタークが回復呪文を唱えようとしている<br>「ホイミ」"); // POPメッセ
+			sessionStorage.setItem("AbilityPopMsg","「グゴゴゴゴ…」<br>エスタークが回復呪文を唱えようとしている<br>「ホイミ」"); // POPメッセ
 			stage = 3;
 			break;
 		default :
@@ -213,7 +219,8 @@ async function statusCheck(gameStatus){
 			else level = Number(sessionStorage.getItem("DamageLevel"));
 			sessionStorage.setItem("inputTime",7);
 		}
-		if(stage === 3 && AbilityCount % 3 === 0){
+
+		if(Ability === 3 && AbilityCount % 3 === 0){
 			// stage3の連続攻撃
 			for(let c = 0; c < ConsecutiveAttack; c++){
 				QuestionsCount++; // 何問目
@@ -258,8 +265,8 @@ async function statusCheck(gameStatus){
 			msg1Elem.style.color = 'red';
 			showPopup("GAME OVER","出直してきてください");
 		}else{
-			updateUserInfo(Player.Name,4); // クリアstageを更新
-			msg1Elem.style.color = 'rgb(255,255,128)';
+			updateUserInfo(Player.Name,6); // クリアstageを更新
+			msg1Elem.style.color = 'rgb(2, 2, 2)';
 			showPopup("CONGRATULATIONS", Player.Name + "の勝利です。");
 		}
 		document.getElementById("endButton").style.visibility = "visible";
@@ -288,6 +295,7 @@ function updateEnemyHPBar() { // enemy
 	const eHPBar = document.getElementById("eHPBar");
 	const enemyHPBar = document.getElementById("enemyHPBar");
 	if (Enemy.HP <= 0) Enemy.HP = 0;
+	if (Enemy.HP >= Enemy.MaxHP) Enemy.HP = Enemy.MaxHP;
 	const enemyHPPercentage = Enemy.HP;
 	// HP色変化
 	if (enemyHPPercentage <= (0.35 * Enemy.MaxHP)) {
@@ -347,7 +355,7 @@ function DamageLevel(level, hitDamage,DummyHP) {
 				x = 1.5;
 				break;
 			case 7:
-				ans = -90;
+				ans = -25;
 				x = 0;
 				break;
 			default:
@@ -435,6 +443,7 @@ function showQuestion() {
 // スペルを一文字ごとに確認し色付けする
 function matchTyping() {  // 定義したinput.入力するたびに処理実行
 	const input = document.getElementById("wordInput");
+	if (!timerRunning || input.disabled) return; // 時間切れの場合は入力ブロック
 	input.focus(); // 要素inputにフォーカスを設定
 	let userInput = input.value; // 入力するたびに最新値
 	console.log("入力文字：" + userInput); // 入力文字
@@ -534,7 +543,7 @@ for (let i = 0; i < matchedCandidate.length; i++) {
 				if (window.stopTimerEarly) stopTimerEarly(); // resolve("typed") が呼ばれてループが進む(タイマー停止)
 				setTimeout(() => { // status判定
 					statusCheck(gameStatus);
-				}, 1000);
+				}, 3000);
 				return;
 			}else {
 				// 継続
@@ -558,13 +567,14 @@ for (let i = 0; i < matchedCandidate.length; i++) {
 		if (window.stopTimerEarly) stopTimerEarly();
 		setTimeout(() => { // status判定
 			statusCheck(gameStatus);
-		}, 2000);
+		}, 3000);
 	}
 };
 
 let typingCount; // タイピングカウント
 document.getElementById("wordInput").addEventListener("input", matchTyping); // inputを定義
 sessionStorage.setItem("DamageLevel" ,2);
+sessionStorage.setItem("inputTime",7);
 // メイン //
 // // 初期化関数を実行して読み込み時に開始。jsファイルを変数にしたため読込時の発火が使用できなくなったので初期化してる
 async function initBattle() {
@@ -585,6 +595,8 @@ async function initBattle() {
 	console.log(questionList);
 	console.log(randomIndex);
 	updateQuestions(questionList[randomIndex].question,level,stage); // false更新。noとlevelを引数に渡す
-	showQuestion(); // 最初の問題表示
-	await startTimerBar(); // タイマー開始
+	setTimeout(() => { // status判定
+		showQuestion(); // 最初の問題表示
+		startTimerBar(); // タイマー開始
+	}, 2000);
 }

@@ -21,6 +21,7 @@ async function addUserRegister(userName) {
             stage3: false,
             stage4: false,
             stage5: false,
+            stage6: false,
             score: "",
         });
         console.log("登録完了");

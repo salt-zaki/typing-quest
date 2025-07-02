@@ -56,15 +56,15 @@ p{
 }
 
 #boss1, #boss4 {
-  top: -7vh;
+  top: -15vh;
 }
 
 #boss2, #boss3 {
-  top: 6vh;
+  top: 9vh;
 }
 
 #boss5 {
-  top: -5vh;
+  top: -3.5vh;
 }
 
 #close5 {
@@ -111,7 +111,7 @@ p{
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 4;
   display: none; /* ← 初期表示で非表示にする */
 }
 
@@ -121,19 +121,45 @@ p{
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 3;
   display: block; /* 表示する */
 }
 
 /* POP */
 .popup {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border: 2px solid #00cccc;
-  padding: 20px;
-  z-index: 999;
-  box-shadow: 0 0 10px #00cccc;
+  position: fixed; /* 固定位置 */
+  top: 45%; /* 画面の中央に配置 */
+  left: 50%; /* 画面の中央に配置 */
+  transform: translate(-50%, -50%); /* 完全に中央に配置 */
+  width: 500px;
+  height: 285px;
+  padding: 4px;
+  background-color: black; /* 背景色 */
+  border: 4px solid #ffe500;; /* 枠線 */
+  align-items: center; /* 中央揃え */
+  justify-content: center; /* 中央揃え */
+  z-index: 9999; /* 他の要素より前面に */
+}
+
+/* .popupボタン */
+#endButton {
+  background-color: #1a1a1a; /* 黒に近いグレー */
+  color: white;
+  border: 2px solid white;
+  width: 90px;
+  padding: 10px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+#endButton:hover {
+  background-color: white;
+  color: black;
+  transform: scale(1.05); /* 少し拡大 */
+}
+
+#jumon{
+  margin: 24px auto 8px auto;
 }

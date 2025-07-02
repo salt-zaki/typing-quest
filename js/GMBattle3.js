@@ -93,7 +93,7 @@ function startTimerBar() {
 						// 連続攻撃終了⇒通常攻撃へ
 						setTimeout(() => {
 							statusCheck(gameStatus);
-						}, 1000);
+						}, 3000);
 					}else{
 						// 連続攻撃継続
 						// HP判定
@@ -102,7 +102,7 @@ function startTimerBar() {
 							sessionStorage.setItem("winner", "enemy");
 							setTimeout(() => { // status判定
 								statusCheck("end");
-							}, 500);
+							}, 1000);
 						}
 						if (window.stopTimerEarly) stopTimerEarly();
 					}

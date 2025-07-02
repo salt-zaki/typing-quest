@@ -50,14 +50,15 @@ document.getElementById("getNameBtn").addEventListener("click", async function (
   nameMsg.innerText = "挑むボスを選んでください";
   document.getElementById("bossSelection").style.visibility = "visible";
   document.getElementById("treasureBox").style.visibility = "visible";
-  document.getElementById("box2-1").style.pointerEvents = "none"; // 押せない
+  if(result.stage6) document.getElementById("box2-2").style.pointerEvents = "auto"; // クリック可
+  else document.getElementById("box2-2").style.pointerEvents = "none"; // クリック不可
 });
 
 // 宝箱クリックで画像切替＋ポップアップ表示
-document.getElementById("box2-1").addEventListener("click", function (e) {
+document.getElementById("box2-2").addEventListener("click", function (e) {
   e.preventDefault(); // aタグのリンク動作を無効に
   this.style.display = "none"; // 開封済みに切り替え
-  document.getElementById("box2-2").style.display = "block";
+  document.getElementById("box2-1").style.display = "block";
   document.getElementById("boxPopup").style.display = "block"; // ポップアップ表示
 });
 
@@ -110,6 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("選択：バラモス");
         break;
       case "bossId5":
+        Pstatus.HP = 150;
+        Pstatus.MaxHP = 150;
         Estatus = new Status("エスターク", 270, 270, "enemyImg5-1.jpg");
         sessionStorage.setItem("stageNo",5);
         console.log("選択：エスターク");

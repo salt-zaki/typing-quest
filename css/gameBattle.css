@@ -51,7 +51,7 @@ body {
 
 /* HPと画像配置 */
 .enemyArea, .playerArea{
-	width: 70%;
+	width: 90%;
 	display: flex;                /* フレックスボックスを使って横並びに */
 	justify-content: center;      /* 横方向のセンタリング */
 }
