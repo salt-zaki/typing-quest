@@ -14,12 +14,26 @@
     // 初期status設定
     fastGameStatus();
     // 表示メッセージ
-    const message = "勇者 " + getName() + "<br>この先に魔王が待ち構えています。<br>魔王を倒し、この世界に平和を!!!";
+    let message;
+    if(sessionStorage.getItem("stageNo") === "2"){
+      message = "???「誰じゃ……私の祈りをじゃまする者は？<br>…おろかものめ!!<br>私を大神官ハーゴンと知ってのおこないか！？」"
+    }else if(sessionStorage.getItem("stageNo") === "3"){
+      message = "???「許さん……！」<br>???「許さんぞ！人間ども！<br>たとえこの身がどうなろうとも<br>一人残らず根絶やしにしてやる！」"
+    }else if(sessionStorage.getItem("stageNo") === "4"){
+      message = "???「ついにここまで来たか。" + getName() + "よ。<br>この大魔王バラモス様に逆らおうなど<br>身のほどをわきまえぬ者たちじゃな。<br>ふたたびび生き返らぬよう<br>そなたらのハラワタを喰らいつくしてくれるわっ！」"
+    }else if(sessionStorage.getItem("stageNo") === "5"){
+      message = "「グゴゴゴゴ……。誰だ？わが眠りをさまたげる者は？」"
+    }else if(sessionStorage.getItem("stageNo") === "6"){
+      message = "";
+    }else {
+      message = "勇者 " + getName() + "<br>この先に魔王が待ち構えています。<br>魔王を倒し、この世界に平和を!!!";
+    }
     // 読み込み時に起動
     window.addEventListener("DOMContentLoaded", () => {
       const MsgId = document.getElementById("typingText");
-      tyipngMessage(message,MsgId); // タイピング風表示
-      NextPage('GameBattle.html', 5); // 画面遷移の処理
+      tyipngMessage(message,MsgId, () => { // タイピング風表示
+        NextPage('GameBattle.html', 2); // 画面遷移の処理
+      });
     });
   </script>
 </body>
