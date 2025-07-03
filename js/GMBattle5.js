@@ -149,8 +149,8 @@ let QuestionsCount // 連続攻撃の問題カウンター（何問目）
 let AbilityTypingCount; // 長文タイピング数
 let displayRomajiLngth; // 長文文字数
 let heelCount = 20; // 体力回復カウント 20
-let healPoint = 20; // 回復値 20
-let lockHeelCount; // ターン制の回復阻止
+let healPoint = 15; // 回復値 20
+let lockHeelCount = 0; // ターン制の回復阻止
 let Ability = 0; // 特殊攻撃状態 0~4
 sessionStorage.setItem("typingCount", true); // 体力回復 true/false
 sessionStorage.setItem("typingMiss", false); // 体力回復 true/false
@@ -479,7 +479,7 @@ function matchTyping() {  // 定義したinput.入力するたびに処理実行
 			typingCount++; // 正しい入力文字数カウント
 			// 回復処理
 			if (typingCount >= heelCount && AbilityCount > lockHeelCount) {
-				Player.HP += heelPoint;
+				Player.HP += healPoint;
 				if (Player.HP > Player.MaxHP) Player.HP = Player.MaxHP;
 				updatePlayerHPBar();
 				showHealEffect();
@@ -572,7 +572,7 @@ for (let i = 0; i < matchedCandidate.length; i++) {
 	}
 };
 
-let typingCount; // タイピングカウント
+let typingCount = 0; // タイピングカウント
 document.getElementById("wordInput").addEventListener("input", matchTyping); // inputを定義
 sessionStorage.setItem("DamageLevel" ,2);
 sessionStorage.setItem("inputTime",7);
