@@ -158,7 +158,7 @@ let stage; // 問題取得ステージ
 
 // 特殊攻撃判定
 function setAbility(){
-	// Ability = 5;
+	// Ability = 3;
 	Ability = Math.floor(Math.random() * 5) + 1; // 1~4
 	sessionStorage.setItem("SaveDL", sessionStorage.getItem("DamageLevel")); // 現在のDLを保持
 	sessionStorage.setItem("gameStatus","AbilityAttack");
@@ -222,7 +222,8 @@ async function statusCheck(gameStatus){
 
 		if(Ability === 3 && AbilityCount % 3 === 0){
 			// stage3の連続攻撃
-			for(let c = 0; c < ConsecutiveAttack; c++){
+			let n = ConsecutiveAttack;
+			for(let c = 0; c < n; c++){
 				QuestionsCount++; // 何問目
 				const result = await findQuestions(level, stage);
 				questionList = result;
