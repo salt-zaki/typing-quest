@@ -376,6 +376,7 @@ async function initBattle() {
 	// inputはDOMContentLoaded内で定義すればnullにならない
 	// スペルを一文字ごとに確認し色付けする
 	input.addEventListener("input", () => {  // 定義したinput.入力するたびに処理実行
+		if (!timerRunning || input.disabled) return; // 時間切れの場合は入力ブロック
 		input.focus(); // 要素inputにフォーカスを設定
 		let userInput = input.value; // 入力するたびに最新値
 		console.log("入力文字：" + userInput); // 入力文字

@@ -401,6 +401,7 @@ if(sessionStorage.getItem("StageLevel") === 0) {
 }
 // スペルを一文字ごとに確認し色付けする
 function matchTyping() {  // 定義したinput.入力するたびに処理実行
+	if (!timerRunning || input.disabled) return; // 時間切れの場合は入力ブロック
 	const input = document.getElementById("wordInput");
 	input.focus(); // 要素inputにフォーカスを設定
 	let userInput = input.value; // 入力するたびに最新値
