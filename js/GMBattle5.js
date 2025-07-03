@@ -173,7 +173,7 @@ function setAbility(){
 			lockHeelCount = AbilityCount + 3; // 2ターン回復阻止
 			sessionStorage.setItem("DamageLevel", 5); // level5+1
 			sessionStorage.setItem("inputTime",7);
-			sessionStorage.setItem("AbilityPopMsg","「すべてを凍てつかせよう…」エスタークは呪文を唱えた<br>「いてつくはどう」<br>勇者は２ターン回復できなくなった。"); // POPメッセ
+			sessionStorage.setItem("AbilityPopMsg","「すべてを凍てつかせよう…」<br>エスタークは呪文を唱えた<br>「いてつくはどう」<br>勇者は２ターン回復できなくなった。"); // POPメッセ
 			stage = 1;
 			break;
 		case 3 :
